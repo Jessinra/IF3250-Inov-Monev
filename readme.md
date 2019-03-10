@@ -32,6 +32,16 @@
     Can be done by changing apache's documentRoot to `home/<path>/<to>/<project>/public/`
 11. To start server, run `php artisan serve`
 
+## Laravel DB Migration Guide
+
+1. Create new scheme migration script with `php artisan make:migration "Create something table"`
+2. Edit the script under /database/migrations/ 
+3. Run `php artisan migrate` to apply new scheme, or if necesssary, 
+4. Run `php artisan migrate:reset` to rollback last update before run the `migrate`
+   
+     Check [full-documentation](https://laravel.com/docs/5.8/migrations) and DB scheme [cheatsheet](https://laravel.com/docs/5.8/migrations#creating-tables)
+
+
 ## About Laravel
 
 Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
