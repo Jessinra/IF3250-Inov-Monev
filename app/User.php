@@ -2,13 +2,16 @@
 
 namespace App;
 
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
     use Notifiable;
+
+    const TYPE_DINAS = "Dinas";
+    const TYPE_KOMINFO = "Kominfo";
+    const TYPE_ADMIN = "Admin";
 
     /**
      * The attributes that are mass assignable.
@@ -16,7 +19,7 @@ class User extends Authenticatable
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'fullname', 'username', 'email', 'password',
     ];
 
     /**
@@ -36,4 +39,19 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    public function isUserDinas()
+    {
+        return UserDinas::find($this->id);
+    }
+
+    public function isUserKominfo()
+    {
+        return UserKominfo::find($this->id);
+    }
+
+    public function isAdmin()
+    {
+        return Admin::find($this->id);
+    }
 }
