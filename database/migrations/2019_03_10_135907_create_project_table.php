@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateProjectTable extends Migration
 {
@@ -17,14 +17,14 @@ class CreateProjectTable extends Migration
             
             $table->increments('id');
             $table->string('name', 150);
-            $table->unsignedInteger('id_dinas');
+            $table->unsignedInteger('dinas_id');
             $table->text('short_description');
             $table->longText('description');
             $table->string('status', 50);
             $table->dateTime('due_on');
 
             // Foreign keys
-            $table->foreign('id_dinas')->references('id')->on('dinas');
+            $table->foreign('dinas_id')->references('id')->on('dinas');
 
             $table->timestamp('added_on');
         });

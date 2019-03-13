@@ -52,6 +52,7 @@ class User extends Authenticatable
 
     public function isAdmin()
     {
-        return Admin::find($this->id);
+        echo $this->id;
+        return UserAdmin::find($this->id);
     }
 }

@@ -13,7 +13,7 @@ use Illuminate\Database\Eloquent\Model;
 class UserDinas extends Model
 {
     //
-    protected $fillable = ['id'];
+    protected $fillable = ['id', 'dinas_id', 'role'];
 
     public function user()
     {

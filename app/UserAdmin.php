@@ -11,10 +11,10 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 
-class Admin extends Model
+class UserAdmin extends Model
 {
     //
-    protected $fillable = ['id'];
+    protected $fillable = ['id', 'dinas_id'];
 
     public function user()
     {

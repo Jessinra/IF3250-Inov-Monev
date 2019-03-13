@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateUserAdminTable extends Migration
 {
@@ -13,14 +13,13 @@ class CreateUserAdminTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_admin', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('id_dinas');
+        Schema::create('user_admins', function (Blueprint $table) {
+            $table->unsignedInteger('id');
+            $table->unsignedInteger('dinas_id');
             
             // Foreign keys
-            $table->foreign('user_id')->references('id')->on('users');
-            $table->foreign('id_dinas')->references('id')->on('dinas');
+            $table->foreign('id')->references('id')->on('users');
+            $table->foreign('dinas_id')->references('id')->on('dinas');
 
             $table->timestamps();
         });
@@ -33,6 +32,6 @@ class CreateUserAdminTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_admin');
+        Schema::dropIfExists('user_admins');
     }
 }
