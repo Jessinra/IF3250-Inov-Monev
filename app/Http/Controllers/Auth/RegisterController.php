@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Admin;
 use App\Http\Controllers\Controller;
 use App\User;
+use App\UserAdmin;
 use App\UserDinas;
 use App\UserKominfo;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -52,7 +52,8 @@ class RegisterController extends Controller
         $this->redirectIfNotLoggedIn($auth);
         $this->redirectIfNotAdmin($auth);
 
-        return view('auth.register');
+        // TODO: enable this
+//        return view('auth.register');
     }
 
     // Route Handler
@@ -63,8 +64,8 @@ class RegisterController extends Controller
         $this->redirectIfNotAdmin($auth);
 
         $this->registerUserHandler($request);
-
-        return view('auth.register');
+        // TODO: enable this
+//        return view('auth.register');
     }
 
     private function registerUserHandler(Request $request)
@@ -81,12 +82,15 @@ class RegisterController extends Controller
 
     private function registerUser($data)
     {
-        if (!($this->isDataValid($data))) {
-            return False;
+
+        $validator = $this->validator($data);
+        if ($validator->fails()) {
+            $this->displayValidationErrors($validator->errors()->all());
+            return false;
         }
 
         $this->createUser($data);
-        return True;
+        return true;
     }
 
     /****************************
@@ -94,22 +98,15 @@ class RegisterController extends Controller
      ****************************/
 
 
-    private function isDataValid($data)
-    {
-        $validator = $this->validator($data);
-        return (!($validator->fails()));
-    }
-
     protected function validator(array $data)
     {
-
-        // TODO : check if id_dinas is required here
+        // TODO : check if dinas_id is required here
 
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'username' => ['required', 'string', 'max:255', 'unique:users'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:8', 'confirmed'],
+            'password' => ['required', 'string', 'min:6', 'confirmed'],
         ]);
     }
 
@@ -120,53 +117,52 @@ class RegisterController extends Controller
     private function createUser($data)
     {
         $user = $this->create($data);
-        $role = $data['user_type'];
+        $userType = trim($data['user_type']);
 
         // TODO: revisit this for register when DB scheme is fixed
 
-        if ($role == User::TYPE_DINAS) {
-            $this->createUserDinas($user);
+        if ($userType == User::TYPE_DINAS) {
+            $this->createUserDinas($user, $data);
 
-        } else if ($role == User::TYPE_KOMINFO) {
+        } else if ($userType == User::TYPE_KOMINFO) {
             $this->createUserKominfo($user);
 
-        } else if ($role == User::TYPE_ADMIN) {
-            $this->createAdmin($user);
-
+        } else if ($userType == User::TYPE_ADMIN) {
+            $this->createAdmin($user, $data);
         }
     }
 
     private function create(array $data)
     {
         return User::create([
-            'fullname' => $data['name'],
-            'username' => $data['username'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
+            'fullname' => trim($data['name']),
+            'username' => trim($data['username']),
+            'email' => trim($data['email']),
+            'password' => Hash::make(trim($data['password'])),
         ]);
     }
 
-    private function createUserDinas($user)
+    private function createUserDinas($user, $data)
     {
         return UserDinas::create([
-            'user_id' => $user->id,
-            'id_dinas' => $user->id_dinas,
-            'role' => $user->role
+            'id' => $user->id,
+            'dinas_id' => $data['dinas_id'],
+            'role' => $data['role']
         ]);
     }
 
     private function createUserKominfo($user)
     {
         return UserKominfo::create([
-            'user_id' => $user->id
+            'id' => $user->id
         ]);
     }
 
-    private function createAdmin($user)
+    private function createAdmin($user, $data)
     {
-        return Admin::create([
-            'user_id' => $user->id,
-            'id_dinas' => $user->id_dinas
+        return UserAdmin::create([
+            'id' => $user->id,
+            'dinas_id' => $data['dinas_id']
         ]);
     }
 
@@ -175,7 +171,7 @@ class RegisterController extends Controller
         echo '<div class="alert alert-success alert-dismissible fade show text-center">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         <strong>Success !</strong> New user has successfully registered!
-      </div>';
+        </div>';
     }
 
     private function displayRegisterFailed()
@@ -183,6 +179,15 @@ class RegisterController extends Controller
         echo '<div class="alert alert-warning alert-dismissible fade show text-center">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         Registration <strong>failed !</strong> Try to contact admin for further assistance!
-      </div>';
+        </div>';
+    }
+
+    private function displayValidationErrors($errors)
+    {
+        foreach ($errors as $error) {
+            echo '<div class="alert alert-warning alert-dismissible fade show text-center">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            ' . $error . '</div>';
+        }
     }
 }
