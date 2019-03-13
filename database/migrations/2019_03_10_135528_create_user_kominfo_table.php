@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateUserKominfoTable extends Migration
 {
@@ -13,14 +13,12 @@ class CreateUserKominfoTable extends Migration
      */
     public function up()
     {
-        Schema::create('user_kominfo', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('user_id');
-            
-            // Foreign keys
-            $table->foreign('user_id')->references('id')->on('users');
-            
+        Schema::create('user_kominfos', function (Blueprint $table) {
+            $table->unsignedInteger('id');
             $table->timestamps();
+
+            $table->foreign('id')->references('id')->on('users');
+            
         });
     }
 
@@ -31,6 +29,6 @@ class CreateUserKominfoTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_kominfo');
+        Schema::dropIfExists('user_kominfos');
     }
 }

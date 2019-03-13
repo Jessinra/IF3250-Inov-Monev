@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateProposalRevisionTable extends Migration
 {
@@ -13,7 +13,7 @@ class CreateProposalRevisionTable extends Migration
      */
     public function up()
     {
-        Schema::create('proposal_revision', function (Blueprint $table) {
+        Schema::create('proposal_revisions', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('user_id');
@@ -34,6 +34,6 @@ class CreateProposalRevisionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('proposal_revision');
+        Schema::dropIfExists('proposal_revisions');
     }
 }
