@@ -9,7 +9,6 @@ use App\UserDinas;
 use App\UserKominfo;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -48,24 +47,26 @@ class RegisterController extends Controller
     // Route Handler
     public function showRegistrationForm()
     {
-        $auth = Auth::user();
-        $this->redirectIfNotLoggedIn($auth);
-        $this->redirectIfNotAdmin($auth);
-
         // TODO: enable this
-//        return view('auth.register');
+
+//        $auth = Auth::user();
+//        $this->redirectIfNotLoggedIn($auth);
+//        $this->redirectIfNotAdmin($auth);
+
+        return view('auth.register');
     }
 
     // Route Handler
     public function registerHandler(Request $request)
     {
-        $auth = Auth::user();
-        $this->redirectIfNotLoggedIn($auth);
-        $this->redirectIfNotAdmin($auth);
+        // TODO: enable this
+
+//        $auth = Auth::user();
+//        $this->redirectIfNotLoggedIn($auth);
+//        $this->redirectIfNotAdmin($auth);
 
         $this->registerUserHandler($request);
-        // TODO: enable this
-//        return view('auth.register');
+        return view('auth.register');
     }
 
     private function registerUserHandler(Request $request)
@@ -147,7 +148,7 @@ class RegisterController extends Controller
         return UserDinas::create([
             'id' => $user->id,
             'dinas_id' => $data['dinas_id'],
-            'role' => $data['role']
+            'role' => '',
         ]);
     }
 
@@ -176,7 +177,7 @@ class RegisterController extends Controller
 
     private function displayRegisterFailed()
     {
-        echo '<div class="alert alert-warning alert-dismissible fade show text-center">
+        echo '<div class="alert alert-danger alert-dismissible fade show text-center">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
         Registration <strong>failed !</strong> Try to contact admin for further assistance!
         </div>';

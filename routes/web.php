@@ -16,8 +16,6 @@ Auth::routes();
 Route::get('/', function () {
     return view('welcome');
 });
-Route::get('/home', 'HomeController@index')->name('home');
-Route::get('/createAdmin', 'Auth\\RegisterController@registerHandler');
-
-
-//http://127.0.0.1:8000/createAdmin?name=admin&username=admin&email=admin@admin.com&password=12341234&password_confirmation=12341234&user_type=Admin&dinas_id=1
+Route::get('home', 'HomeController@index')->name('home');
+Route::get('register', 'Auth\\RegisterController@showRegistrationForm')->name('register');
+Route::post('register', 'Auth\\RegisterController@registerHandler')->name('registerPost');
