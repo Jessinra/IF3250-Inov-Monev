@@ -14,8 +14,17 @@
 Auth::routes();
 
 Route::get('/', function () {
-    return view('welcome');
+    // TODO: change this after dashboard is done, put it inside method
+    return view('auth.login');
 });
+
+Route::get('/dashboard', function () {
+    // TODO: change this after dashboard is done, put it inside method
+    return view('home');
+});
+
+
 Route::get('home', 'HomeController@index')->name('home');
 Route::get('register', 'Auth\\RegisterController@showRegistrationForm')->name('register');
 Route::post('register', 'Auth\\RegisterController@registerHandler')->name('registerPost');
+

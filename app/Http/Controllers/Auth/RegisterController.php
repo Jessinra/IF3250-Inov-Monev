@@ -4,9 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\User;
-use App\UserAdmin;
-use App\UserDinas;
-use App\UserKominfo;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -41,17 +38,16 @@ class RegisterController extends Controller
      */
     public function __construct()
     {
-        $this->middleware('auth');
+//         TODO: enable this after able to create user
+//        $this->middleware('auth');
     }
 
     // Route Handler
     public function showRegistrationForm()
     {
-        // TODO: enable this
-
+//         TODO: enable this after able to create user
 //        $auth = Auth::user();
 //        $this->redirectIfNotLoggedIn($auth);
-//        $this->redirectIfNotAdmin($auth);
 
         return view('auth.register');
     }
@@ -59,11 +55,9 @@ class RegisterController extends Controller
     // Route Handler
     public function registerHandler(Request $request)
     {
-        // TODO: enable this
-
+//         TODO: enable this after able to create user
 //        $auth = Auth::user();
 //        $this->redirectIfNotLoggedIn($auth);
-//        $this->redirectIfNotAdmin($auth);
 
         $this->registerUserHandler($request);
         return view('auth.register');
@@ -118,52 +112,28 @@ class RegisterController extends Controller
     private function createUser($data)
     {
         $user = $this->create($data);
-        $userType = trim($data['user_type']);
 
-        // TODO: revisit this for register when DB scheme is fixed
-
-        if ($userType == User::TYPE_DINAS) {
-            $this->createUserDinas($user, $data);
-
-        } else if ($userType == User::TYPE_KOMINFO) {
-            $this->createUserKominfo($user);
-
-        } else if ($userType == User::TYPE_ADMIN) {
-            $this->createAdmin($user, $data);
-        }
+        // TODO: REWORK THIS !
+//        $userType = trim($data['user_type']);
+//
+//        if ($userType == User::TYPE_DINAS) {
+//            $this->createUserDinas($user, $data);
+//
+//        } else if ($userType == User::TYPE_KOMINFO) {
+//            $this->createUserKominfo($user);
+//
+//        } else if ($userType == User::TYPE_ADMIN) {
+//            $this->createAdmin($user, $data);
+//        }
     }
 
     private function create(array $data)
     {
         return User::create([
-            'fullname' => trim($data['name']),
+            'name' => trim($data['name']),
             'username' => trim($data['username']),
             'email' => trim($data['email']),
             'password' => Hash::make(trim($data['password'])),
-        ]);
-    }
-
-    private function createUserDinas($user, $data)
-    {
-        return UserDinas::create([
-            'id' => $user->id,
-            'dinas_id' => $data['dinas_id'],
-            'role' => '',
-        ]);
-    }
-
-    private function createUserKominfo($user)
-    {
-        return UserKominfo::create([
-            'id' => $user->id
-        ]);
-    }
-
-    private function createAdmin($user, $data)
-    {
-        return UserAdmin::create([
-            'id' => $user->id,
-            'dinas_id' => $data['dinas_id']
         ]);
     }
 

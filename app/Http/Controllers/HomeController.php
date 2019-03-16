@@ -27,17 +27,6 @@ class HomeController extends Controller
         $auth = Auth::user();
         $this->redirectIfNotLoggedIn($auth);
 
-        if ($auth->isUserDinas()) {
-            return redirect('/dashboard/dinas');
-
-        } else if ($auth->isUserKominfo()) {
-            return redirect('/dashboard/kominfo');
-
-        } else if ($auth->isAdmin()) {
-            return redirect('/dashboard/admin');
-
-        } else {
-            return abort(404);
-        }
+        return redirect('/dashboard');
     }
 }

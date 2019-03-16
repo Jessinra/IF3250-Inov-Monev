@@ -16,12 +16,6 @@ class Controller extends BaseController
         if (!$auth) {
             return abort(403);
         }
-    }
-
-    protected function redirectIfNotAdmin($auth)
-    {
-        if (!($auth->isAdmin())) {
-            return abort(403);
-        }
+        return null;
     }
 }
