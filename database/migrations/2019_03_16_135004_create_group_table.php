@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class CreateDinasTable extends Migration
+class CreateGroupTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,10 @@ class CreateDinasTable extends Migration
      */
     public function up()
     {
-        Schema::create('dinas', function (Blueprint $table) {
+        Schema::create('groups', function (Blueprint $table) {
             $table->increments('id');
             $table->string('name', 150);
-            $table->longText('description');
-            
-            $table->timestamps();
+            $table->text('description');
         });
     }
 
@@ -29,6 +27,6 @@ class CreateDinasTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('dinas');
+        Schema::dropIfExists('groups');
     }
 }

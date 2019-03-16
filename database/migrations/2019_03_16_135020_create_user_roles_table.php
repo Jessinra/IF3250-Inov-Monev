@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProposalReviewTable extends Migration
+class CreateUserRolesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,14 @@ class CreateProposalReviewTable extends Migration
      */
     public function up()
     {
-        Schema::create('proposal_reviews', function (Blueprint $table) {
+        Schema::create('user_roles', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('project_id');
             $table->unsignedInteger('user_id');
-            $table->longText('review');
-
-            // Foreign keys
-            $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('user_id')->references('id')->on('users');            
-
+            $table->unsignedInteger('role_id');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('role_id')->references('id')->on('roles')->onDelete('cascade');
         });
     }
 
@@ -34,6 +31,6 @@ class CreateProposalReviewTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('proposal_reviews');
+        Schema::dropIfExists('user_roles');
     }
 }

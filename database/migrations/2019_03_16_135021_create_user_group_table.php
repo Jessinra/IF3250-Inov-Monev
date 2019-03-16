@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProposalRevisionTable extends Migration
+class CreateUserGroupTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,14 @@ class CreateProposalRevisionTable extends Migration
      */
     public function up()
     {
-        Schema::create('proposal_revisions', function (Blueprint $table) {
+        Schema::create('user_groups', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('project_id');
             $table->unsignedInteger('user_id');
-            $table->longText('revision');
-
-            // Foreign keys
-            $table->foreign('project_id')->references('id')->on('projects');
-            $table->foreign('user_id')->references('id')->on('users');            
-
+            $table->unsignedInteger('group_id');
             $table->timestamps();
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('group_id')->references('id')->on('groups')->onDelete('cascade');
         });
     }
 
@@ -34,6 +31,6 @@ class CreateProposalRevisionTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('proposal_revisions');
+        Schema::dropIfExists('user_groups');
     }
 }
