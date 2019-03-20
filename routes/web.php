@@ -13,10 +13,7 @@
 
 Auth::routes();
 
-Route::get('/', function () {
-    // TODO: change this after dashboard is done, put it inside method
-    return view('auth.login');
-});
+Route::get('/', 'PagesController@login');
 
 Route::get('/dashboard', function () {
     // TODO: change this after dashboard is done, put it inside method
