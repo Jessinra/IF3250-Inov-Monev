@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Group;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
 
 class GroupController extends Controller
 {
@@ -26,21 +27,52 @@ class GroupController extends Controller
         $action = isset($data['action']) ? $data['action'] : null;
         if ($action == "create") {
             $this->createNewGroup($data);
+
         } else if ($action == "read") {
-            $this->readGroup($data);
+
+//          TODO: change this to display correct view
+            return $this->readGroup($data);
+
         } else if ($action == "update") {
             $this->updateGroup($data);
+
         } else if ($action == "delete") {
             $this->deleteGroup($data);
+
         } else if ($action == "fetchAll") {
-            $this->fetchAllGroup();
+
+//          TODO: change this to display correct view
+            return $this->fetchAllGroup();
+
         } else if ($action == null) {
-            return abort(404);
+
+//          TODO : return using abort(404);
+            return "abort 404";
         }
 
-//         TODO: change this to proper page
-//         return view('GroupManagement');
+//      TODO: change this to proper page
+//      return view('GroupManagement');
         return "this is Group management page";
+
+    }
+
+    private function parseCreateData($data)
+    {
+        return [
+            'name' => isset($data['name']) ? $data['name'] : null,
+            'description' => isset($data['description']) ? $data['description'] : null,
+        ];
+    }
+
+    private function isCreateDataValid($data)
+    {
+
+        $validator = Validator::make($data, [
+            'name' => ['required', 'string', 'max:255', 'unique:permissions'],
+            'description' => ['string', 'max:255']
+        ]);
+
+        return !($validator->fails());
     }
 
     private function createNewGroup($data)
