@@ -15,6 +15,7 @@ class GroupController extends Controller
 //        $this->redirectIfNotLoggedIn($auth);
 
         $data = $request->all();
+        $data = array_map('trim', $data);
         $action = $data['action'];
 
         if ($action == "create") {
@@ -51,6 +52,8 @@ class GroupController extends Controller
         } else {
             $this->displayCreateGroupSucceeded();
         }
+
+        return $newGroup;
     }
 
     private function displayCreateGroupFailed()

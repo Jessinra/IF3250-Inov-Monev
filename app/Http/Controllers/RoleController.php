@@ -17,6 +17,7 @@ class RoleController extends Controller
 //        $this->redirectIfNotLoggedIn($auth);
 
         $data = $request->all();
+        $data = array_map('trim', $data);
         $action = $data['action'];
 
         if ($action == "create") {
@@ -53,6 +54,8 @@ class RoleController extends Controller
         } else {
             $this->displayCreateRoleSucceeded();
         }
+
+        return $newRole;
     }
 
     public function addPermission($data)

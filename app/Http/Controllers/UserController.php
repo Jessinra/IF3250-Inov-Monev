@@ -20,6 +20,7 @@ class UserController extends Controller
 //        $this->redirectIfNotLoggedIn($auth);
 
         $data = $request->all();
+        $data = array_map('trim', $data);
         $action = $data['action'];
 
         if ($action == "create") {
@@ -52,14 +53,14 @@ class UserController extends Controller
             }
 
             $newUser = User::create([
-                'name' => trim($data['name']),
-                'username' => trim($data['username']),
-                'email' => trim($data['email']),
-                'password' => Hash::make(trim($data['password'])),
+                'name' => $data['name'],
+                'username' => $data['username'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
             ]);
 
-            $this->addRoleOnCreate($newUser, trim($data['role_id']));
-            $this->addGroupOnCreate($newUser, trim($data['group_id']));
+            $this->addRoleOnCreate($newUser, $data['role_id']);
+            $this->addGroupOnCreate($newUser, $data['group_id']);
 
         } catch (\Exception $e) {
             $newUser = null;
@@ -70,6 +71,8 @@ class UserController extends Controller
         } else {
             $this->displayCreateUserSucceeded();
         }
+
+        return $newUser;
     }
 
     public function addRole($data)
@@ -191,7 +194,7 @@ class UserController extends Controller
             $user['name'] = $data['name'];
             $user['username'] = $data['username'];
             $user['email'] = $data['email'];
-            $user['password'] = Hash::make(trim($data['password']));
+            $user['password'] = Hash::make($data['password']);
 
             $user->save();
 
