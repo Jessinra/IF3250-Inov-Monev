@@ -11,6 +11,10 @@ use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
 {
+    public function userDashboard()
+    {
+        return "this is User management page";
+    }
 
     public function userManagementHandler(Request $request)
     {
@@ -21,8 +25,8 @@ class UserController extends Controller
 
         $data = $request->all();
         $data = array_map('trim', $data);
-        $action = $data['action'];
 
+        $action = isset($data['action']) ? $data['action'] : null;
         if ($action == "create") {
             $this->createNewUser($data);
         } else if ($action == "read") {
@@ -37,6 +41,8 @@ class UserController extends Controller
             $this->addRole($data);
         } else if ($action == "addGroup") {
             $this->addGroup($data);
+        } else if ($action == null) {
+            return abort(404);
         }
 
 //         TODO: change this to proper page

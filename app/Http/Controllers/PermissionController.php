@@ -7,6 +7,11 @@ use Illuminate\Http\Request;
 
 class PermissionController extends Controller
 {
+    public function permissionDashboard()
+    {
+        return "this is Permission management page";
+    }
+
     public function permissionManagementHandler(Request $request)
     {
 
@@ -16,8 +21,8 @@ class PermissionController extends Controller
 
         $data = $request->all();
         $data = array_map('trim', $data);
-        $action = $data['action'];
 
+        $action = isset($data['action']) ? $data['action'] : null;
         if ($action == "create") {
             $this->createNewPermission($data);
         } else if ($action == "read") {
@@ -28,6 +33,10 @@ class PermissionController extends Controller
             $this->deletePermission($data);
         } else if ($action == "fetchAll") {
             $this->fetchAllPermission();
+        } else if ($action == null) {
+
+//            TODO : return using abort(404);
+            return "abort 404";
         }
 
 //         TODO: change this to proper page
@@ -35,14 +44,30 @@ class PermissionController extends Controller
         return "this is Permission management page";
     }
 
+    private function parseCreateData($data)
+    {
+        return [
+            'name' => isset($data['name']) ? $data['name'] : null,
+            'description' => isset($data['description']) ? $data['description'] : null,
+        ];
+    }
+
+    private function isNameEmpty($newPermissionData)
+    {
+        return !$newPermissionData['name'];
+    }
+
     private function createNewPermission($data)
     {
-
+        $newPermission = $this->parseCreateData($data);
         try {
-            $newPermission = Permission::create([
-                'name' => $data['name'],
-                'description' => $data['description']
-            ]);
+
+            if ($this->isNameEmpty($newPermission)) {
+                throw new \Exception("Permission has no name");
+            }
+
+            $newPermission = Permission::create($newPermission);
+
         } catch (\Exception $e) {
             $newPermission = null;
         }

@@ -7,6 +7,12 @@ use Illuminate\Http\Request;
 
 class GroupController extends Controller
 {
+
+    public function groupDashboard()
+    {
+        return "this is Group management page";
+    }
+
     public function groupManagementHandler(Request $request)
     {
 
@@ -16,8 +22,8 @@ class GroupController extends Controller
 
         $data = $request->all();
         $data = array_map('trim', $data);
-        $action = $data['action'];
 
+        $action = isset($data['action']) ? $data['action'] : null;
         if ($action == "create") {
             $this->createNewGroup($data);
         } else if ($action == "read") {
@@ -28,6 +34,8 @@ class GroupController extends Controller
             $this->deleteGroup($data);
         } else if ($action == "fetchAll") {
             $this->fetchAllGroup();
+        } else if ($action == null) {
+            return abort(404);
         }
 
 //         TODO: change this to proper page

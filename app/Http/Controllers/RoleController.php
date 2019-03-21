@@ -9,6 +9,11 @@ use Illuminate\Http\Request;
 class RoleController extends Controller
 {
 
+    public function roleDashboard()
+    {
+        return "this is Role management page";
+    }
+
     public function roleManagementHandler(Request $request)
     {
 
@@ -18,8 +23,8 @@ class RoleController extends Controller
 
         $data = $request->all();
         $data = array_map('trim', $data);
-        $action = $data['action'];
 
+        $action = isset($data['action']) ? $data['action'] : null;
         if ($action == "create") {
             $this->createNewRole($data);
         } else if ($action == "read") {
@@ -30,6 +35,8 @@ class RoleController extends Controller
             $this->deleteRole($data);
         } else if ($action == "fetchAll") {
             $this->fetchAllRole();
+        } else if ($action == null) {
+            return abort(404);
         }
 
 //         TODO: change this to proper page
