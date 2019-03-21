@@ -103,7 +103,7 @@ class PermissionControllerTest extends TestCase
     public function testCreateWithoutDescription()
     {
         /*
-         *   Creating permission without desc is ok
+         *   Creating permission without desc is not allowed
          */
 
         $this->call('POST', '/permission', array(
@@ -117,17 +117,30 @@ class PermissionControllerTest extends TestCase
 
     }
 
-    public function testCreateEmptyField()
+    public function testCreateEmptyName()
     {
 
         $this->call('POST', '/permission', array(
             'action' => $this->createAction,
             'name' => "",
-            'description' => ""
         ));
 
         $this->assertDatabaseMissing('permissions', [
             'name' => "",
+        ]);
+    }
+
+    public function testCreateEmptyDesc()
+    {
+
+        $this->call('POST', '/permission', array(
+            'action' => $this->createAction,
+            'name' => $this->testPermissionName,
+            'description' => ""
+        ));
+
+        $this->assertDatabaseHas('permissions', [
+            'name' => $this->testPermissionName,
             'description' => ""
         ]);
     }
@@ -190,6 +203,21 @@ class PermissionControllerTest extends TestCase
         ]);
     }
 
+
+    private function createDummyPermission($copy = "")
+    {
+
+        $this->call('POST', '/permission', array(
+            'action' => $this->createAction,
+            'name' => $this->testPermissionName . $copy,
+            'description' => $this->testPermissionDesc . $copy
+        ));
+    }
+
+    /*===========================================
+                Read section
+     ===========================================*/
+
     public function testRead()
     {
 
@@ -201,20 +229,6 @@ class PermissionControllerTest extends TestCase
         ));
 
         $response->assertSee($this->testPermissionName);
-    }
-
-    /*===========================================
-                Read section
-     ===========================================*/
-
-    private function createDummyPermission($copy = "")
-    {
-
-        $this->call('POST', '/permission', array(
-            'action' => $this->createAction,
-            'name' => $this->testPermissionName . $copy,
-            'description' => $this->testPermissionDesc . $copy
-        ));
     }
 
     public function testReadNotFound()
