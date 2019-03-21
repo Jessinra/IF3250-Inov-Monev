@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Group;
+use App\Role;
 use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -30,6 +32,10 @@ class UserController extends Controller
             $this->deleteUser($data);
         } else if ($action == "fetchAll") {
             $this->fetchAllUser();
+        } else if ($action == "addRole") {
+            $this->addRole($data);
+        } else if ($action == "addGroup") {
+            $this->addGroup($data);
         }
 
 //         TODO: change this to proper page
@@ -52,6 +58,9 @@ class UserController extends Controller
                 'password' => Hash::make(trim($data['password'])),
             ]);
 
+            $this->addRoleOnCreate($newUser, trim($data['role_id']));
+            $this->addGroupOnCreate($newUser, trim($data['group_id']));
+
         } catch (\Exception $e) {
             $newUser = null;
         }
@@ -60,6 +69,77 @@ class UserController extends Controller
             $this->displayCreateUserFailed();
         } else {
             $this->displayCreateUserSucceeded();
+        }
+    }
+
+    public function addRole($data)
+    {
+        try {
+            $user = User::find($data['user_id']);
+            $role = Role::find($data['role_id']);
+
+            if (!$user || !$role) {
+                $this->displayAddRoleFailed();
+            }
+
+            $user->roles()->attach($role);
+            $this->displayAddRoleSucceeded();
+
+        } catch (\Exception $e) {
+            $this->displayAddRoleFailed();
+        }
+    }
+
+    private function addRoleOnCreate($user, $roleId)
+    {
+        try {
+            $role = Role::find($roleId);
+
+            if (!$user || !$role) {
+                $this->displayAddRoleFailed();
+            }
+
+            $user->roles()->attach($role);
+            $this->displayAddRoleSucceeded();
+
+        } catch (\Exception $e) {
+            $this->displayAddRoleFailed();
+        }
+    }
+
+    public function addGroup($data)
+    {
+        try {
+            $user = User::find($data['user_id']);
+            $group = Group::find($data['group_id']);
+
+            if (!$user || !$group) {
+                $this->displayAddGroupFailed();
+            }
+
+            $user->groups()->attach($group);
+            $this->displayAddGroupSucceeded();
+
+        } catch (\Exception $e) {
+            $this->displayAddGroupFailed();
+        }
+    }
+
+
+    private function addGroupOnCreate($user, string $groupId)
+    {
+        try {
+            $group = Group::find($groupId);
+
+            if (!$user || !$group) {
+                $this->displayAddGroupFailed();
+            }
+
+            $user->groups()->attach($group);
+            $this->displayAddGroupSucceeded();
+
+        } catch (\Exception $e) {
+            $this->displayAddGroupFailed();
         }
     }
 
@@ -137,7 +217,7 @@ class UserController extends Controller
         return true;
     }
 
-    protected function getValidator(array $data)
+    private function getValidator(array $data)
     {
 
         return Validator::make($data, [
@@ -206,6 +286,47 @@ class UserController extends Controller
         } catch (\Exception $e) {
             $this->displayReadUserFailed();
             return [];
+        }
+    }
+
+    private function displayAddGroupFailed()
+    {
+        echo '<div class="alert alert-danger alert-dismissible fade show text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Failed !</strong> User cannot join the group!
+        </div>';
+    }
+
+    private function displayAddRoleFailed()
+    {
+        echo '<div class="alert alert-danger alert-dismissible fade show text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Failed !</strong> Role cannot be given!
+        </div>';
+    }
+
+    private function displayAddRoleSucceeded()
+    {
+        echo '<div class="alert alert-success alert-dismissible fade show text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Success !</strong> Role has been given to user!
+        </div>';
+    }
+
+    private function displayAddGroupSucceeded()
+    {
+        echo '<div class="alert alert-success alert-dismissible fade show text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Success !</strong> User joined the group!
+        </div>';
+    }
+
+    private function displayValidationErrors($errors)
+    {
+        foreach ($errors as $error) {
+            echo '<div class="alert alert-warning alert-dismissible fade show text-center">
+            <button type="button" class="close" data-dismiss="alert">&times;</button>
+            ' . $error . '</div>';
         }
     }
 

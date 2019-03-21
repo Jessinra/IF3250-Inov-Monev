@@ -9,4 +9,10 @@ class Permission extends Model
     protected $fillable = [
         'name', 'description'
     ];
+
+    /* Eloquent many to many function */
+    public function roles()
+    {
+        return $this->belongsToMany('App\Role')->withPivot('id')->withTimestamps();
+    }
 }

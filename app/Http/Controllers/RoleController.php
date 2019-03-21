@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Permission;
 use App\Role;
 use Illuminate\Http\Request;
 
@@ -54,6 +55,24 @@ class RoleController extends Controller
         }
     }
 
+    public function addPermission($data)
+    {
+        try {
+            $role = Role::find($data['role_id']);
+            $permission = Permission::find($data['permission_id']);
+
+            if (!$role || !$permission) {
+                $this->displayAddPermissionFailed();
+            }
+
+            $role->permissions()->attach($permission);
+            $this->displayAddPermissionSucceeded();
+
+        } catch (\Exception $e) {
+            $this->displayAddPermissionFailed();
+        }
+    }
+
     private function displayCreateRoleFailed()
     {
         echo '<div class="alert alert-danger alert-dismissible fade show text-center">
@@ -73,8 +92,8 @@ class RoleController extends Controller
     private function readRole($data)
     {
         try {
-            $role = Role::findOrNew($data['id']);
-            return $role;
+            $permission = Role::findOrNew($data['id']);
+            return $permission;
 
         } catch (\Exception $e) {
             $this->displayReadRoleFailed();
@@ -94,16 +113,16 @@ class RoleController extends Controller
     {
         try {
 
-            $role = Role::find($data['id']);
-            $role['name'] = $data['name'];
-            $role['description'] = $data['description'];
-            $role->save();
+            $permission = Role::find($data['id']);
+            $permission['name'] = $data['name'];
+            $permission['description'] = $data['description'];
+            $permission->save();
 
         } catch (\Exception $e) {
-            $role = null;
+            $permission = null;
         }
 
-        if (!$role) {
+        if (!$permission) {
             $this->displayUpdateRoleFailed();
         } else {
             $this->displayUpdateRoleSucceeded();
@@ -131,14 +150,14 @@ class RoleController extends Controller
     {
         try {
 
-            $role = Role::find($data['id']);
-            $role->delete();
+            $permission = Role::find($data['id']);
+            $permission->delete();
 
         } catch (\Exception $e) {
-            $role = null;
+            $permission = null;
         }
 
-        if (!$role) {
+        if (!$permission) {
             $this->displayDeleteRoleFailed();
         } else {
             $this->displayDeleteRoleSucceeded();
@@ -170,6 +189,22 @@ class RoleController extends Controller
             $this->displayReadRoleFailed();
             return [];
         }
+    }
+
+    private function displayAddPermissionFailed()
+    {
+        echo '<div class="alert alert-danger alert-dismissible fade show text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Failed !</strong> Permission cannot be granted!
+        </div>';
+    }
+
+    private function displayAddPermissionSucceeded()
+    {
+        echo '<div class="alert alert-success alert-dismissible fade show text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Success !</strong> New permission has been granted!
+        </div>';
     }
 
 

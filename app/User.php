@@ -35,4 +35,17 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /* Eloquent many to many function */
+    public function roles()
+    {
+        return $this->belongsToMany('App\Role')->withPivot('id')->withTimestamps();
+    }
+
+    /* Eloquent many to many function */
+    public function groups()
+    {
+        return $this->belongsToMany('App\Group')->withPivot('id')->withTimestamps();
+    }
+
 }
