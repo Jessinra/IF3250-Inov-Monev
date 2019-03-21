@@ -4,9 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Permission;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Validator;
+
 
 class PermissionController extends Controller
 {
+    public function permissionDashboard()
+    {
+        return "this is Permission management page";
+    }
+
     public function permissionManagementHandler(Request $request)
     {
 
@@ -15,42 +22,72 @@ class PermissionController extends Controller
 //        $this->redirectIfNotLoggedIn($auth);
 
         $data = $request->all();
-        $action = $data['action'];
+        $data = array_map('trim', $data);
 
+        $action = isset($data['action']) ? $data['action'] : null;
         if ($action == "create") {
             $this->createNewPermission($data);
+
         } else if ($action == "read") {
-            $this->readPermission($data);
+
+//          TODO: change this to display correct view
+            return $this->readPermission($data);
+
         } else if ($action == "update") {
             $this->updatePermission($data);
+
         } else if ($action == "delete") {
             $this->deletePermission($data);
+
         } else if ($action == "fetchAll") {
-            $this->fetchAllPermission();
+
+//          TODO: change this to display correct view
+            return $this->fetchAllPermission();
+
+        } else if ($action == null) {
+
+//          TODO : return using abort(404);
+            return "abort 404";
         }
 
-//         TODO: change this to proper page
-//         return view('PermissionManagement');
+//      TODO: change this to proper page
+//      return view('PermissionManagement');
         return "this is Permission management page";
+
+    }
+
+    private function parseCreateData($data)
+    {
+        return [
+            'name' => isset($data['name']) ? $data['name'] : null,
+            'description' => isset($data['description']) ? $data['description'] : null,
+        ];
+    }
+
+    private function isCreateDataValid($data)
+    {
+
+        $validator = Validator::make($data, [
+            'name' => ['required', 'string', 'max:255', 'unique:permissions'],
+            'description' => ['string', 'max:255']
+        ]);
+
+        return !($validator->fails());
     }
 
     private function createNewPermission($data)
     {
+        $data = $this->parseCreateData($data);
 
-        try {
-            $newPermission = Permission::create([
-                'name' => $data['name'],
-                'description' => $data['description']
-            ]);
-        } catch (\Exception $e) {
-            $newPermission = null;
-        }
-
-        if (!$newPermission) {
-            $this->displayCreatePermissionFailed();
-        } else {
+        if ($this->isCreateDataValid($data)) {
+            $newPermission = Permission::create($data);
             $this->displayCreatePermissionSucceeded();
+        } else {
+            $newPermission = null;
+            $this->displayCreatePermissionFailed();
         }
+
+        return $newPermission;
     }
 
     private function displayCreatePermissionFailed()
@@ -69,45 +106,51 @@ class PermissionController extends Controller
         </div>';
     }
 
+
     private function readPermission($data)
     {
-        try {
-            $permission = Permission::findOrNew($data['id']);
-            return $permission;
-
-        } catch (\Exception $e) {
-            $this->displayReadPermissionFailed();
-            return new Permission();
-        }
+        return Permission::findOrNew(
+            isset($data['id']) ? $data['id'] : null
+        );
     }
 
-    private function displayReadPermissionFailed()
+    private function parseUpdateData($data)
     {
-        echo '<div class="alert alert-danger alert-dismissible fade show text-center">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Failed !</strong> Permission not found!
-        </div>';
+        return [
+            'id' => isset($data['id']) ? $data['id'] : null,
+            'name' => isset($data['name']) ? $data['name'] : null,
+            'description' => isset($data['description']) ? $data['description'] : null,
+        ];
+    }
+
+    private function isUpdateDataValid($data)
+    {
+
+        $validator = Validator::make($data, [
+            'id' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:255', 'unique:permissions'],
+            'description' => ['string', 'max:255']
+        ]);
+
+        return !($validator->fails());
     }
 
     private function updatePermission($data)
     {
-        try {
+        $data = $this->parseUpdateData($data);
+
+        if ($this->isUpdateDataValid($data)) {
 
             $permission = Permission::find($data['id']);
             $permission['name'] = $data['name'];
             $permission['description'] = $data['description'];
             $permission->save();
 
-        } catch (\Exception $e) {
-            $permission = null;
-        }
-
-        if (!$permission) {
-            $this->displayUpdatePermissionFailed();
-        } else {
             $this->displayUpdatePermissionSucceeded();
-        }
 
+        } else {
+            $this->displayUpdatePermissionFailed();
+        }
     }
 
     private function displayUpdatePermissionFailed()
@@ -128,19 +171,16 @@ class PermissionController extends Controller
 
     private function deletePermission(array $data)
     {
-        try {
+        $permission = Permission::find(
+            isset($data['id']) ? $data['id'] : null
+        );
 
-            $permission = Permission::find($data['id']);
+        if ($permission) {
             $permission->delete();
-
-        } catch (\Exception $e) {
-            $permission = null;
-        }
-
-        if (!$permission) {
-            $this->displayDeletePermissionFailed();
-        } else {
             $this->displayDeletePermissionSucceeded();
+
+        } else {
+            $this->displayDeletePermissionFailed();
         }
     }
 
@@ -166,7 +206,6 @@ class PermissionController extends Controller
         try {
             return Permission::all();
         } catch (\Exception $e) {
-            $this->displayReadPermissionFailed();
             return [];
         }
     }
