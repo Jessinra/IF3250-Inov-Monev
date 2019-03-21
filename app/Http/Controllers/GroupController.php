@@ -68,7 +68,7 @@ class GroupController extends Controller
     {
 
         $validator = Validator::make($data, [
-            'name' => ['required', 'string', 'max:255', 'unique:permissions'],
+            'name' => ['required', 'string', 'max:255', 'unique:groups'],
             'description' => ['string', 'max:255']
         ]);
 
@@ -78,19 +78,14 @@ class GroupController extends Controller
     private function createNewGroup($data)
     {
 
-        try {
-            $newGroup = Group::create([
-                'name' => $data['name'],
-                'description' => $data['description']
-            ]);
-        } catch (\Exception $e) {
-            $newGroup = null;
-        }
+        $data = $this->parseCreateData($data);
 
-        if (!$newGroup) {
-            $this->displayCreateGroupFailed();
-        } else {
+        if ($this->isCreateDataValid($data)) {
+            $newGroup = Group::create($data);
             $this->displayCreateGroupSucceeded();
+        } else {
+            $newGroup = null;
+            $this->displayCreateGroupFailed();
         }
 
         return $newGroup;
@@ -114,14 +109,9 @@ class GroupController extends Controller
 
     private function readGroup($data)
     {
-        try {
-            $group = Group::findOrNew($data['id']);
-            return $group;
-
-        } catch (\Exception $e) {
-            $this->displayReadGroupFailed();
-            return new Group();
-        }
+        return Group::findOrNew(
+            isset($data['id']) ? $data['id'] : null
+        );
     }
 
     private function displayReadGroupFailed()
@@ -132,25 +122,43 @@ class GroupController extends Controller
         </div>';
     }
 
+    private function parseUpdateData($data)
+    {
+        return [
+            'id' => isset($data['id']) ? $data['id'] : null,
+            'name' => isset($data['name']) ? $data['name'] : null,
+            'description' => isset($data['description']) ? $data['description'] : null,
+        ];
+    }
+
+    private function isUpdateDataValid($data)
+    {
+
+        $validator = Validator::make($data, [
+            'id' => ['required', 'string'],
+            'name' => ['required', 'string', 'max:255', 'unique:groups'],
+            'description' => ['string', 'max:255']
+        ]);
+
+        return !($validator->fails());
+    }
+
     private function updateGroup($data)
     {
-        try {
+        $data = $this->parseUpdateData($data);
+
+        if ($this->isUpdateDataValid($data)) {
 
             $group = Group::find($data['id']);
             $group['name'] = $data['name'];
             $group['description'] = $data['description'];
             $group->save();
 
-        } catch (\Exception $e) {
-            $group = null;
-        }
-
-        if (!$group) {
-            $this->displayUpdateGroupFailed();
-        } else {
             $this->displayUpdateGroupSucceeded();
-        }
 
+        } else {
+            $this->displayUpdateGroupFailed();
+        }
     }
 
     private function displayUpdateGroupFailed()
@@ -171,19 +179,16 @@ class GroupController extends Controller
 
     private function deleteGroup(array $data)
     {
-        try {
+        $group = Group::find(
+            isset($data['id']) ? $data['id'] : null
+        );
 
-            $group = Group::find($data['id']);
+        if ($group) {
             $group->delete();
-
-        } catch (\Exception $e) {
-            $group = null;
-        }
-
-        if (!$group) {
-            $this->displayDeleteGroupFailed();
-        } else {
             $this->displayDeleteGroupSucceeded();
+
+        } else {
+            $this->displayDeleteGroupFailed();
         }
     }
 
