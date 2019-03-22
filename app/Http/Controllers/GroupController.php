@@ -77,16 +77,15 @@ class GroupController extends Controller
 
     private function createNewGroup($data)
     {
-
         $data = $this->parseCreateData($data);
 
-        if ($this->isCreateDataValid($data)) {
-            $newGroup = Group::create($data);
-            $this->displayCreateGroupSucceeded();
-        } else {
-            $newGroup = null;
+        if (!($this->isCreateDataValid($data))) {
             $this->displayCreateGroupFailed();
+            return null;
         }
+
+        $newGroup = Group::create($data);
+        $this->displayCreateGroupSucceeded();
 
         return $newGroup;
     }
@@ -147,18 +146,18 @@ class GroupController extends Controller
     {
         $data = $this->parseUpdateData($data);
 
-        if ($this->isUpdateDataValid($data)) {
-
-            $group = Group::find($data['id']);
-            $group['name'] = $data['name'];
-            $group['description'] = $data['description'];
-            $group->save();
-
-            $this->displayUpdateGroupSucceeded();
-
-        } else {
+        if (!($this->isUpdateDataValid($data))) {
             $this->displayUpdateGroupFailed();
+            return null;
         }
+
+        $group = Group::find($data['id']);
+        $group['name'] = $data['name'];
+        $group['description'] = $data['description'];
+        $group->save();
+
+        $this->displayUpdateGroupSucceeded();
+        return $group;
     }
 
     private function displayUpdateGroupFailed()
@@ -214,7 +213,6 @@ class GroupController extends Controller
         try {
             return Group::all();
         } catch (\Exception $e) {
-            $this->displayReadGroupFailed();
             return [];
         }
     }
