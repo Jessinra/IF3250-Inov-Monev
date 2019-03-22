@@ -48,4 +48,24 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Group', "user_group")->withPivot('id')->withTimestamps();
     }
 
+    public function addRole($roleId)
+    {
+        $this->roles()->attach($roleId);
+    }
+
+    public function removeRole($roleId)
+    {
+        $this->roles()->detach($roleId);
+    }
+
+    public function addGroup($groupId)
+    {
+        $this->groups()->attach($groupId);
+    }
+
+    public function removeGroup($groupId)
+    {
+        $this->groups()->detach($groupId);
+    }
+
 }

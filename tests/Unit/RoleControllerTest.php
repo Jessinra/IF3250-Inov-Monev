@@ -71,7 +71,7 @@ class RoleControllerTest extends TestCase
 //    TODO: Test authorized
 
     /*===========================================
-                Routing section
+                Create section
     ===========================================*/
 
     public function testCreate()
@@ -286,8 +286,6 @@ class RoleControllerTest extends TestCase
             'name' => $this->testRoleName,
         ]);
     }
-
-
 
 
     /*===========================================

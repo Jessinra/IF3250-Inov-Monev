@@ -8,6 +8,7 @@ use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule;
 
 class UserController extends Controller
 {
@@ -28,21 +29,28 @@ class UserController extends Controller
 
         $action = isset($data['action']) ? $data['action'] : null;
         if ($action == "create") {
-            $this->createNewUser($data);
+            $this->createNewUserHandler($data);
+
         } else if ($action == "read") {
-            $this->readUser($data);
+
+//          TODO: change this to display correct view
+            return $this->readUser($data);
+
         } else if ($action == "update") {
-            $this->updateUser($data);
+            $this->updateUserHandler($data);
+
         } else if ($action == "delete") {
             $this->deleteUser($data);
+
         } else if ($action == "fetchAll") {
-            $this->fetchAllUser();
-        } else if ($action == "addRole") {
-            $this->addRole($data);
-        } else if ($action == "addGroup") {
-            $this->addGroup($data);
+
+//          TODO: change this to display correct view
+            return $this->fetchAllUser();
+
         } else if ($action == null) {
-            return abort(404);
+
+//          TODO : return using abort(404);
+            return "abort 404";
         }
 
 //         TODO: change this to proper page
@@ -50,106 +58,101 @@ class UserController extends Controller
         return "this is User management page";
     }
 
-    private function createNewUser($data)
+
+    private function createNewUserHandler($data)
     {
 
-        try {
-            if (!($this->isDataValid($data))) {
-                throw new \Exception();
-            }
-
-            $newUser = User::create([
-                'name' => $data['name'],
-                'username' => $data['username'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-            ]);
-
-            $this->addRoleOnCreate($newUser, $data['role_id']);
-            $this->addGroupOnCreate($newUser, $data['group_id']);
-
-        } catch (\Exception $e) {
-            $newUser = null;
-        }
+        $newUser = $this->createNewUser($data);
+        $newUser = $this->addRoleToUser($newUser, $data);
+        $newUser = $this->addGroupToUser($newUser, $data);
 
         if (!$newUser) {
             $this->displayCreateUserFailed();
         } else {
             $this->displayCreateUserSucceeded();
         }
-
-        return $newUser;
     }
 
-    public function addRole($data)
+    private function createNewUser($data)
     {
-        try {
-            $user = User::find($data['user_id']);
-            $role = Role::find($data['role_id']);
+        $data = $this->parseCreateData($data);
 
-            if (!$user || !$role) {
-                $this->displayAddRoleFailed();
-            }
-
-            $user->roles()->attach($role);
-            $this->displayAddRoleSucceeded();
-
-        } catch (\Exception $e) {
-            $this->displayAddRoleFailed();
+        if (!($this->isCreateDataValid($data))) {
+            return null;
         }
+
+        return User::create($data);
     }
 
-    private function addRoleOnCreate($user, $roleId)
+    private function parseCreateData($data)
     {
-        try {
-            $role = Role::find($roleId);
+        return [
+            'name' => isset($data['name']) ? $data['name'] : null,
+            'username' => isset($data['username']) ? $data['username'] : null,
+            'email' => isset($data['email']) ? $data['email'] : null,
+            'password' => isset($data['password']) ? Hash::make($data['password']) : null,
 
-            if (!$user || !$role) {
-                $this->displayAddRoleFailed();
-            }
+            // Copy of password un-hashed for validation
+            'c_pass' => isset($data['password']) ? $data['password'] : null,
+            'c_pass_confirmation' => isset($data['password_confirmation']) ? $data['password_confirmation'] : null,
 
-            $user->roles()->attach($role);
-            $this->displayAddRoleSucceeded();
-
-        } catch (\Exception $e) {
-            $this->displayAddRoleFailed();
-        }
+            'roleId' => isset($data['roleId']) ? $data['roleId'] : null,
+            'groupId' => isset($data['groupId']) ? $data['groupId'] : null,
+        ];
     }
 
-    public function addGroup($data)
+    private function isCreateDataValid($data)
     {
-        try {
-            $user = User::find($data['user_id']);
-            $group = Group::find($data['group_id']);
 
-            if (!$user || !$group) {
-                $this->displayAddGroupFailed();
-            }
+        $validator = Validator::make($data, [
+            'name' => ['required', 'string', 'max:255'],
+            'username' => ['required', 'string', 'max:255', 'unique:users'],
+            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            'password' => ['required', 'string', 'max:255'],
 
-            $user->groups()->attach($group);
-            $this->displayAddGroupSucceeded();
+            'c_pass' => ['required', 'string', 'min:6', 'confirmed'],
+        ]);
 
-        } catch (\Exception $e) {
-            $this->displayAddGroupFailed();
-        }
+        return !($validator->fails());
     }
 
-
-    private function addGroupOnCreate($user, string $groupId)
+    private function addRoleToUser($user, $data)
     {
-        try {
-            $group = Group::find($groupId);
-
-            if (!$user || !$group) {
-                $this->displayAddGroupFailed();
-            }
-
-            $user->groups()->attach($group);
-            $this->displayAddGroupSucceeded();
-
-        } catch (\Exception $e) {
-            $this->displayAddGroupFailed();
+        $roleId = $this->parseRoleId($data);
+        if ($this->isRoleIdValid($roleId) && $user) {
+            $user->addRole($roleId);
         }
+        return $user;
+    }
+
+    private function parseRoleId($data)
+    {
+        return isset($data['roleId']) ? $data['roleId'] : null;
+    }
+
+    private function isRoleIdValid($roleId)
+    {
+        return Role::find($roleId);
+    }
+
+    private function addGroupToUser($user, $data)
+    {
+        $groupId = $this->parseGroupId($data);
+        if ($this->isGroupIdValid($groupId) && $user) {
+            $user->addGroup($groupId);
+        }
+
+        return $user;
+    }
+
+    private function parseGroupId($data)
+    {
+        return isset($data['groupId']) ? $data['groupId'] : null;
+    }
+
+    private function isGroupIdValid($groupId)
+    {
+        return Group::find($groupId);
     }
 
     private function displayCreateUserFailed()
@@ -170,71 +173,129 @@ class UserController extends Controller
 
     private function readUser($data)
     {
-        try {
-            $user = User::findOrNew($data['id']);
-            return $user;
-
-        } catch (\Exception $e) {
-            $this->displayReadUserFailed();
-            return new User();
-        }
+        return User::findOrNew(
+            isset($data['id']) ? $data['id'] : null
+        );
     }
 
-    private function displayReadUserFailed()
+    private function updateUserHandler($data)
     {
-        echo '<div class="alert alert-danger alert-dismissible fade show text-center">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Failed !</strong> User not found!
-        </div>';
-    }
+        $data = $this->parseUpdateData($data);
+        $updatedUser = $this->updateUser($data);
 
-    private function updateUser($data)
-    {
-        try {
-
-            if (!($this->isDataValid($data))) {
-                throw new \Exception();
-            }
-
-            $user = User::find($data['id']);
-            $user['name'] = $data['name'];
-            $user['username'] = $data['username'];
-            $user['email'] = $data['email'];
-            $user['password'] = Hash::make($data['password']);
-
-            $user->save();
-
-        } catch (\Exception $e) {
-            $user = null;
+        if ($data['addRole']) {
+            $updatedUser = $this->addRoleToUser($updatedUser, $data);
+        } else if ($data['removeRole']) {
+            $updatedUser = $this->removeRoleFromUser($updatedUser, $data);
+        } else if ($data['addGroup']) {
+            $updatedUser = $this->addGroupToUser($updatedUser, $data);
+        } else if ($data['removeGroup']) {
+            $updatedUser = $this->removeGroupFromUser($updatedUser, $data);
         }
 
-        if (!$user) {
+        if (!$updatedUser) {
             $this->displayUpdateUserFailed();
         } else {
             $this->displayUpdateUserSucceeded();
         }
     }
 
-    private function isDataValid($data)
+    private function parseUpdateData($data)
     {
-        $validator = $this->getValidator($data);
-        if ($validator->fails()) {
-            $this->displayValidationErrors($validator->errors()->all());
-            return false;
-        }
+        return [
+            'id' => isset($data['id']) ? $data['id'] : null,
+            'name' => isset($data['name']) ? $data['name'] : null,
+            'username' => isset($data['username']) ? $data['username'] : null,
+            'email' => isset($data['email']) ? $data['email'] : null,
+            'password' => isset($data['password']) ? Hash::make($data['password']) : null,
 
-        return true;
+            'addRole' => isset($data['addRole']) ? ($data['addRole'] === 'true') : false,
+            'removeRole' => isset($data['removeRole']) ? ($data['removeRole'] === 'true') : false,
+            'addGroup' => isset($data['addGroup']) ? ($data['addGroup'] === 'true') : false,
+            'removeGroup' => isset($data['removeGroup']) ? ($data['removeGroup'] === 'true') : false,
+
+            'roleId' => isset($data['roleId']) ? $data['roleId'] : null,
+            'groupId' => isset($data['groupId']) ? $data['groupId'] : null,
+
+            // Copy of password un-hashed for validation
+            'c_pass' => isset($data['password']) ? $data['password'] : null,
+            'c_pass_confirmation' => isset($data['password_confirmation']) ? $data['password_confirmation'] : null,
+        ];
     }
 
-    private function getValidator(array $data)
+    private function updateUser($data)
+    {
+        if (!($this->isUpdateDataValid($data))) {
+            return null;
+        }
+
+        $user = User::find($data['id']);
+        if (!$user) {
+            return null;
+        }
+
+        $user['name'] = $data['name'];
+        $user['username'] = $data['username'];
+        $user['email'] = $data['email'];
+        $user['password'] = $data['password'];
+        $user->save();
+
+        return $user;
+    }
+
+    private function isUpdateDataValid($data)
     {
 
-        return Validator::make($data, [
-            'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:users'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
-            'password' => ['required', 'string', 'min:6', 'confirmed'],
-        ]);
+        if ($data['id']) {
+
+            $user = User::find($data["id"]);
+            $validator = Validator::make($data, [
+                'id' => ['required', 'string'],
+                'name' => ['required', 'string', 'max:255'],
+                'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user)],
+                'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user)],
+                'password' => ['required', 'string', 'max:255'],
+
+                'c_pass' => ['required', 'string', 'min:6', 'confirmed'],
+            ]);
+        } else {
+
+            $validator = Validator::make($data, [
+                'id' => ['required', 'string'],
+                'name' => ['required', 'string', 'max:255'],
+                'username' => ['required', 'string', 'max:255', 'unique:users'],
+                'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+                'password' => ['required', 'string', 'max:255'],
+
+                'c_pass' => ['required', 'string', 'min:6', 'confirmed'],
+            ]);
+        }
+
+        return !($validator->fails());
+    }
+
+    private function removeRoleFromUser($user, $data)
+    {
+        if (!$user) {
+            return null;
+        }
+
+        $roleId = $this->parseRoleId($data);
+        $user->removeRole($roleId);
+
+        return $user;
+    }
+
+    private function removeGroupFromUser($user, $data)
+    {
+        if (!$user) {
+            return null;
+        }
+
+        $groupId = $this->parseGroupId($data);
+        $user->removeGroup($groupId);
+
+        return $user;
     }
 
     private function displayUpdateUserFailed()
@@ -255,28 +316,17 @@ class UserController extends Controller
 
     private function deleteUser(array $data)
     {
-        try {
+        $user = User::find(
+            isset($data['id']) ? $data['id'] : null
+        );
 
-            $user = User::find($data['id']);
+        if ($user) {
             $user->delete();
-
-        } catch (\Exception $e) {
-            $user = null;
-        }
-
-        if (!$user) {
-            $this->displayDeleteUserFailed();
-        } else {
             $this->displayDeleteUserSucceeded();
-        }
-    }
 
-    private function displayDeleteUserFailed()
-    {
-        echo '<div class="alert alert-danger alert-dismissible fade show text-center">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Failed !</strong> User cannot be deleted!
-        </div>';
+        } else {
+            $this->displayDeleteUserFailed();
+        }
     }
 
     private function displayDeleteUserSucceeded()
@@ -287,57 +337,24 @@ class UserController extends Controller
         </div>';
     }
 
+    private function displayDeleteUserFailed()
+    {
+        echo '<div class="alert alert-danger alert-dismissible fade show text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Failed !</strong> User cannot be deleted!
+        </div>';
+    }
+
     private function fetchAllUser()
     {
 
         try {
             return User::all();
         } catch (\Exception $e) {
-            $this->displayReadUserFailed();
             return [];
         }
     }
-
-    private function displayAddGroupFailed()
-    {
-        echo '<div class="alert alert-danger alert-dismissible fade show text-center">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Failed !</strong> User cannot join the group!
-        </div>';
-    }
-
-    private function displayAddRoleFailed()
-    {
-        echo '<div class="alert alert-danger alert-dismissible fade show text-center">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Failed !</strong> Role cannot be given!
-        </div>';
-    }
-
-    private function displayAddRoleSucceeded()
-    {
-        echo '<div class="alert alert-success alert-dismissible fade show text-center">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Success !</strong> Role has been given to user!
-        </div>';
-    }
-
-    private function displayAddGroupSucceeded()
-    {
-        echo '<div class="alert alert-success alert-dismissible fade show text-center">
-        <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Success !</strong> User joined the group!
-        </div>';
-    }
-
-    private function displayValidationErrors($errors)
-    {
-        foreach ($errors as $error) {
-            echo '<div class="alert alert-warning alert-dismissible fade show text-center">
-            <button type="button" class="close" data-dismiss="alert">&times;</button>
-            ' . $error . '</div>';
-        }
-    }
-
-
 }
+
+
+
