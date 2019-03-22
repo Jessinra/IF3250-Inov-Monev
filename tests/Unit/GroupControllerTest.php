@@ -23,7 +23,11 @@ class GroupControllerTest extends TestCase
         parent::setUp();
 
         $this->withoutExceptionHandling();          // show error stacktrace
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('groups')->truncate();   // reset id increment
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         $this->setOutputCallback(function () {
         }); // hide echos
     }
@@ -203,15 +207,7 @@ class GroupControllerTest extends TestCase
     }
 
 
-    private function createDummyGroup($copy = "")
-    {
 
-        $this->call('POST', '/group', array(
-            'action' => $this->createAction,
-            'name' => $this->testGroupName . $copy,
-            'description' => $this->testGroupDesc . $copy
-        ));
-    }
 
     /*===========================================
                 Read section

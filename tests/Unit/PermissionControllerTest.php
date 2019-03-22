@@ -24,7 +24,11 @@ class PermissionControllerTest extends TestCase
         parent::setUp();
 
         $this->withoutExceptionHandling();          // show error stacktrace
+
+        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
         DB::table('permissions')->truncate();   // reset id increment
+        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+
         $this->setOutputCallback(function () {
         }); // hide echos
     }
@@ -201,17 +205,6 @@ class PermissionControllerTest extends TestCase
         $this->assertDatabaseMissing('permissions', [
             'name' => $this->testPermissionName,
         ]);
-    }
-
-
-    private function createDummyPermission($copy = "")
-    {
-
-        $this->call('POST', '/permission', array(
-            'action' => $this->createAction,
-            'name' => $this->testPermissionName . $copy,
-            'description' => $this->testPermissionDesc . $copy
-        ));
     }
 
     /*===========================================

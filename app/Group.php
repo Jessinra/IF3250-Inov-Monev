@@ -13,6 +13,6 @@ class Group extends Model
     /* Eloquent many to many function */
     public function users()
     {
-        return $this->belongsToMany('App\User')->withPivot('id')->withTimestamps();
+        return $this->belongsToMany('App\User', "user_group")->withPivot('id')->withTimestamps();
     }
 }

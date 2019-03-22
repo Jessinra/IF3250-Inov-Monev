@@ -18,13 +18,22 @@ class Role extends Model
     /* Eloquent many to many function */
     public function users()
     {
-        return $this->belongsToMany('App\User')->withPivot('id')->withTimestamps();
+        return $this->belongsToMany('App\User', "user_role")->withPivot('id')->withTimestamps();
     }
 
     /* Eloquent many to many function */
     public function permissions()
     {
-        return $this->belongsToMany('App\Permission')->withPivot('id')->withTimestamps();
+        return $this->belongsToMany('App\Permission', 'role_permission')->withPivot('id')->withTimestamps();
     }
 
+    public function addPermissions($permissionIds)
+    {
+        $this->permissions()->attach($permissionIds);
+    }
+
+    public function resetPermission()
+    {
+        $this->permissions()->detach();
+    }
 }
