@@ -9,4 +9,12 @@ class PagesController extends Controller
     public function login() {
         return view('auth.login');
     }
+
+    public function dashboard() {
+        return view('pages.dashboard');
+    }
+
+    public function permissions() {
+        return view('pages.permissions');
+    }
 }

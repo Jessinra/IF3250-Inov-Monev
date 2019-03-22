@@ -15,10 +15,9 @@ Auth::routes();
 
 Route::get('/', 'PagesController@login');
 
-Route::get('/dashboard', function () {
-    // TODO: change this after dashboard is done, put it inside method
-    return view('home');
-});
+Route::get('/dashboard', 'PagesController@dashboard');
+
+Route::get('/dashboard/permissions', 'PermissionController@permissions');
 
 
 Route::get('home', 'HomeController@index')->name('home');

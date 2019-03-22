@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Validator;
 
 class PermissionController extends Controller
 {
-    public function permissionDashboard()
+    public function permissions()
     {
-        return "this is Permission management page";
+        return view('pages.permissions');
     }
 
     public function permissionManagementHandler(Request $request)
