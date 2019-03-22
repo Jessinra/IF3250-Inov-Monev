@@ -9,7 +9,7 @@ use Tests\TestCase;
 
 class PermissionControllerTest extends TestCase
 {
-    use RefreshDatabase;
+    // use RefreshDatabase;
 
     private $createAction = "create";
     private $readAction = "read";
