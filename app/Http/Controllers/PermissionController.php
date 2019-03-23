@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Permission;
+use App\Http\Resources\Permission as PermissionResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -202,11 +203,15 @@ class PermissionController extends Controller
 
     private function fetchAllPermission()
     {
+        // Get permissions
+        $permissions = Permission::paginate(15);
 
-        try {
-            return Permission::all();
-        } catch (\Exception $e) {
-            return [];
-        }
+        // return as a resource
+        return PermissionResource::collection($permissions);
+        // try {
+        //     return Permission::all();
+        // } catch (\Exception $e) {
+        //     return [];
+        // }
     }
 }

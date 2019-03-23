@@ -11,7 +11,7 @@
     </head>
 
     <body class="hold-transition skin-blue sidebar-mini">
-        <div id="app"/>
+        <div id="app"></div>
     <script src="{{ asset('js/app.js') }}"></script>
     </body>
 </html>
