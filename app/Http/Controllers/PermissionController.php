@@ -80,13 +80,13 @@ class PermissionController extends Controller
     {
         $data = $this->parseCreateData($data);
 
-        if ($this->isCreateDataValid($data)) {
-            $newPermission = Permission::create($data);
-            $this->displayCreatePermissionSucceeded();
-        } else {
-            $newPermission = null;
+        if (!($this->isCreateDataValid($data))) {
             $this->displayCreatePermissionFailed();
+            return null;
         }
+
+        $newPermission = Permission::create($data);
+        $this->displayCreatePermissionSucceeded();
 
         return $newPermission;
     }
@@ -140,18 +140,18 @@ class PermissionController extends Controller
     {
         $data = $this->parseUpdateData($data);
 
-        if ($this->isUpdateDataValid($data)) {
-
-            $permission = Permission::find($data['id']);
-            $permission['name'] = $data['name'];
-            $permission['description'] = $data['description'];
-            $permission->save();
-
-            $this->displayUpdatePermissionSucceeded();
-
-        } else {
+        if (!($this->isUpdateDataValid($data))) {
             $this->displayUpdatePermissionFailed();
+            return null;
         }
+
+        $permission = Permission::find($data['id']);
+        $permission['name'] = $data['name'];
+        $permission['description'] = $data['description'];
+        $permission->save();
+
+        $this->displayUpdatePermissionSucceeded();
+        return $permission;
     }
 
     private function displayUpdatePermissionFailed()
