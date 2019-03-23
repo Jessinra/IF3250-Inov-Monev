@@ -42,6 +42,7 @@
                         </li>
                         <li class="page-item disabled">
                             <a class="page-link text-dark">Page {{ pagination.current_page }} of {{pagination.last_page}}</a>
+                        </li>
                         <li v-bind:class="[{disabled: !pagination.next_page_url}]" class="paginate_button next">
                             <a @click="fetchAllPermissions(pagination.next_page_url)">Next</a>
                         </li>
