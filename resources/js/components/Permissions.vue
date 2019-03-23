@@ -22,14 +22,19 @@
                         <table class="table table-hover">
                             <tbody>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Description</th>
+                                    <th class="col-sm-1">ID</th>
+                                    <th class="col-sm-2">Name</th>
+                                    <th class="col-sm-7">Description</th>
+                                    <th class="col-sm-2 text-right">Actions</th>
                                 </tr>
                                 <tr v-for="permission in permissions" v-bind:key="permission.id">
-                                    <th>{{ permission.id }}</th>
-                                    <th>{{ permission.name }}</th>
-                                    <th>{{ permission.description }}</th>
+                                    <th class="col-sm-1">{{ permission.id }}</th>
+                                    <th class="col-sm-2">{{ permission.name }}</th>
+                                    <th class="col-sm-7">{{ permission.description }}</th>
+                                    <th class="row col-sm-2 text-right">
+                                        <button class="btn btn-warning" @click="openUpdate(permission.id)">Update</button>
+                                        <button class="btn btn-danger" @click="deletePermission(permission.id)">Delete</button>
+                                    </th>
                                 </tr>
                             </tbody>
                         </table>
@@ -72,6 +77,39 @@
                 </div>
             </div>
         </div> <!-- /.content -->
+
+        <!-- update modal -->
+        <!-- <div v-if="showUpdate" class="modal-mask" transition="modal">
+            <div class="box col-xs-12 modal-wrapper">
+                <div class="modal-container">
+                    <div class="modal-header">
+                        <slot name="header">Update permission</slot>
+                    </div>
+                    <form @submit.prevent="updatePermission(permission.id)" role="form">
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label>Name
+                                    <input type="text" class="form-control"
+                                    placeholder="Update name" v-model="permission.name">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Description
+                                    <input type="text" class="form-control"
+                                    placeholder="Update description" v-model="permission.description">
+                                </label>
+                            </div>
+                        </div>
+                    </form>    
+                    <div class="modal-footer text-right">
+                        <slot name="footer">
+                        <button type="submit" class="btn btn-warning">Update</button>
+                        </slot>
+                    </div>
+                </div>
+            </div>
+        </div> -->
+
     </div> <!-- /.content-wrapper -->
 </template>
 
@@ -88,7 +126,9 @@ export default {
                 description: ''
             },
             permission_id: '',
-            pagination: {}
+            pagination: {},
+            showUpdate: false,
+            showCreate: false
         }
     },
 
@@ -117,6 +157,12 @@ export default {
             
             this.pagination = pagination;
         },
+        openCreate: function() {
+            this.showCreate = true;
+        },
+        closeCreate: function() {
+            this.showCreate = false;
+        },
         createNewPermission: function() {
             let url = 'http://localhost:8000/permissions';
             let send = {
@@ -131,11 +177,34 @@ export default {
                     this.fetchAllPermissions();
                 })
         },
-        deletePermission: function() {
+        deletePermission: function(id) {
             let url = 'http://localhost:8000/permissions';
             let send = {
                 action: "delete",
-                id: this.permission.id
+                id: id
+            }
+
+            axios.post(url, send)
+                .then(res => {
+                    console.log(res);
+                    this.fetchAllPermissions();
+                })
+        },
+        openUpdate: function(id) {
+            this.permission.id = id;
+            this.showUpdate = true;
+        },
+        closeUpdate: function() {
+            this.showUpdate = false;
+        },
+        updatePermission: function(id) {
+            console.log('ye');
+            let url = 'http://localhost:8000/permissions';
+            let send = {
+                action: "update",
+                id: id,
+                name: this.permission.name,
+                description: this.permission.description
             }
 
             axios.post(url, send)
