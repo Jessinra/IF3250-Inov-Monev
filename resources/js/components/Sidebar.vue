@@ -1,10 +1,9 @@
-@extends('layouts.master')
-
-@section('sidebar')
+<template>
     <!-- Left side column. contains the logo and sidebar -->
     <aside class="main-sidebar">
         <!-- sidebar: style can be found in sidebar.less -->
-        <section class="sidebar">
+        <div class="sidebar">
+
             <!-- Sidebar user panel (optional) -->
             <div class="user-panel">
             <div class="pull-left image">
@@ -16,9 +15,9 @@
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
             </div>
-        
-            {{-- <!-- search form (Optional) -->
-            <form action="#" method="get" class="sidebar-form">
+
+            <!-- search form (Optional) -->
+            <!-- <form action="#" method="get" class="sidebar-form">
             <div class="input-group">
                 <input type="text" name="q" class="form-control" placeholder="Search...">
                 <span class="input-group-btn">
@@ -26,35 +25,27 @@
                     </button>
                 </span>
             </div>
-            </form>
-            <!-- /.search form --> --}}
-        
+            </form> -->
+            <!-- /.search form -->
+
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">HEADER</li>
+            <li class="header">Categories</li>
             <!-- Optionally, you can add icons to the links -->
-            <li class="active"><a href="#"><i class="fa fa-link"></i> <span>Link</span></a></li>
-            <li><a href="#"><i class="fa fa-link"></i> <span>Permission</span></a></li>
-            <li class="treeview">
-                <a href="#"><i class="fa fa-link"></i> <span>Multilevel</span>
-                <span class="pull-right-container">
-                    <i class="fa fa-angle-left pull-right"></i>
-                    </span>
-                </a>
-                <ul class="treeview-menu">
-                <li><a href="#">Link in level 2</a></li>
-                <li><a href="#">Link in level 2</a></li>
-                </ul>
-            </li>
-            </ul>
-            <!-- /.sidebar-menu -->
-        </section>
+            <li class="active"><router-link to="/dashboard">
+                <i class="fa fa-dashboard"></i>
+                <span>Dashboard</span></router-link></li>
+            <li><router-link to="/permissions">
+                <i class="fa fa-link"></i>
+                <span>Permission</span></router-link></li>
+        <!-- /.sidebar-menu -->
+        </div>
     <!-- /.sidebar -->
     </aside>
-@endsection
+</template>
 
-@section('content')
-    <div id="app">
-        <permissions></permissions>
-    </div>
-@endsection
+<script>
+    export default{
+        name: 'Sidebar'
+    }
+</script>

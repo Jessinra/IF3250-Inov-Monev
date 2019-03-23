@@ -17,4 +17,8 @@ class PagesController extends Controller
     public function permissions() {
         return view('pages.permissions');
     }
+
+    public function index() {
+        return view('layouts.app');
+    }
 }
