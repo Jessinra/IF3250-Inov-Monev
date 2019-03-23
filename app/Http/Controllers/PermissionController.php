@@ -43,7 +43,7 @@ class PermissionController extends Controller
         } else if ($action == "fetchAll") {
 
 //          TODO: change this to display correct view
-            return $this->fetchAllPermission();
+            return $this->fetchAllPermissions();
 
         } else if ($action == null) {
 
@@ -201,7 +201,7 @@ class PermissionController extends Controller
         </div>';
     }
 
-    private function fetchAllPermission()
+    private function fetchAllPermissions()
     {
         // Get permissions
         $permissions = Permission::paginate(15);
