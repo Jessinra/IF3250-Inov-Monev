@@ -32,7 +32,8 @@
                                     <th class="col-sm-2">{{ permission.name }}</th>
                                     <th class="col-sm-7">{{ permission.description }}</th>
                                     <th class="row col-sm-2 text-right">
-                                        <button class="btn btn-warning" @click="openUpdate(permission.id)">Update</button>
+                                        <button class="btn btn-warning" @click="openUpdate(permission.id)"
+                                        data-toggle="modal" data-target="#modal-permission">Update</button>
                                         <button class="btn btn-danger" @click="deletePermission(permission.id)">Delete</button>
                                     </th>
                                 </tr>
@@ -40,6 +41,12 @@
                         </table>
                     </div>
                 </div>
+
+                <div class="text-right">
+                    <button class="btn btn-primary" data-toggle="modal"
+                    data-target="#modal-create">Create</button>
+                </div>
+                    
                 <div class="text-right">
                     <ul class="pagination">
                         <li v-bind:class="[{disabled: !pagination.prev_page_url}]" class="paginate_button previous">
@@ -53,7 +60,9 @@
                         </li>
                     </ul>
                 </div>
-                <div class="box box-primary">
+                
+                <!-- alternative create new permission box -->
+                <!-- <div class="box box-primary">
                     <div class="box-header with-border">
                         <div class="box-title">Create new permission</div>
                     </div>
@@ -74,16 +83,54 @@
                             <button type="submit" class="btn btn-primary">Submit</button>
                         </div>
                     </form>
-                </div>
+                </div> -->
             </div>
         </div> <!-- /.content -->
 
+        <!-- create new modal -->
+        <div class="modal" id="modal-create" transition="modal">
+            <div class="modal-wrapper">
+                <div class="modal-dialog box box-default">
+                    <div class="box-header with-border">
+                        <slot name="header">Create new permission</slot>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <form @submit.prevent="createNewPermission" role="form">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Name
+                                    <input type="text" class="form-control"
+                                    placeholder="New name" v-model="permission.name">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Description
+                                    <input type="text" class="form-control"
+                                    placeholder="New description" v-model="permission.description">
+                                </label>
+                            </div>
+                        </div>
+                    </form>    
+                    <div class="modal-footer text-right">
+                        <slot name="footer">
+                            <button type="submit" class="btn btn-primary"
+                            @click="createNewPermission()" data-dismiss="modal">Create</button>
+                        </slot>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- / create new modal -->
+
         <!-- update modal -->
-        <!-- <div v-if="showUpdate" class="modal-mask" transition="modal">
-            <div class="box col-xs-12 modal-wrapper">
-                <div class="modal-container">
+        <div class="modal" id="modal-permission" transition="modal">
+            <div class="modal-wrapper">
+                <div class="modal-dialog box box-default">
                     <div class="modal-header">
                         <slot name="header">Update permission</slot>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
                     </div>
                     <form @submit.prevent="updatePermission(permission.id)" role="form">
                         <div class="modal-body">
@@ -103,13 +150,14 @@
                     </form>    
                     <div class="modal-footer text-right">
                         <slot name="footer">
-                        <button type="submit" class="btn btn-warning">Update</button>
+                            <button type="submit" class="btn btn-warning"
+                            @click="updatePermission(permission.id)" data-dismiss="modal">Update</button>
                         </slot>
                     </div>
                 </div>
             </div>
-        </div> -->
-
+        </div>
+        <!-- / update modal -->
     </div> <!-- /.content-wrapper -->
 </template>
 
@@ -157,12 +205,6 @@ export default {
             
             this.pagination = pagination;
         },
-        openCreate: function() {
-            this.showCreate = true;
-        },
-        closeCreate: function() {
-            this.showCreate = false;
-        },
         createNewPermission: function() {
             let url = 'http://localhost:8000/permissions';
             let send = {
@@ -192,13 +234,8 @@ export default {
         },
         openUpdate: function(id) {
             this.permission.id = id;
-            this.showUpdate = true;
-        },
-        closeUpdate: function() {
-            this.showUpdate = false;
         },
         updatePermission: function(id) {
-            console.log('ye');
             let url = 'http://localhost:8000/permissions';
             let send = {
                 action: "update",
