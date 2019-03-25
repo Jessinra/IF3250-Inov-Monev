@@ -14,5 +14,3 @@
 Auth::routes();
 
 Route::get('/{any}', 'PagesController@index')->where('any', '.*');
-Route::post('/permissions', 'PermissionController@permissionManagementHandler');
-Route::put('/permissions', 'PermissionController@updatePermission');

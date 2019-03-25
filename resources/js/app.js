@@ -2,8 +2,10 @@ require('./bootstrap');
 
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+import Meta from 'vue-meta'
 
 Vue.use(VueRouter);
+Vue.use(Meta);
 
 import App from './App.vue'
 import PermissionsComponent from './components/Permissions.vue'

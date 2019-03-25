@@ -48,7 +48,7 @@ class PermissionControllerTest extends TestCase
     public function testPOSTRouteWithoutAction()
     {
 
-        $response = $this->call('POST', '/permissions', array());
+        $response = $this->call('POST', '/api/permissions', array());
 
         $response->assertStatus(200);
         $response->assertSee("abort 404");
@@ -57,7 +57,7 @@ class PermissionControllerTest extends TestCase
     public function testPOSTRouteWithAction()
     {
 
-        $response = $this->call('POST', '/permissions', array(
+        $response = $this->call('POST', '/api/permissions', array(
             'action' => 'test only',
         ));
 
@@ -74,7 +74,7 @@ class PermissionControllerTest extends TestCase
     public function testCreate()
     {
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->createAction,
             'name' => $this->testPermissionName,
             'description' => $this->testPermissionDesc
@@ -92,7 +92,7 @@ class PermissionControllerTest extends TestCase
          *   Creating permission without name is not allowed
          */
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->createAction,
             'description' => $this->testPermissionDesc
         ));
@@ -109,7 +109,7 @@ class PermissionControllerTest extends TestCase
          *   Creating permission without desc is not allowed
          */
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->createAction,
             'name' => $this->testPermissionName,
         ));
@@ -123,7 +123,7 @@ class PermissionControllerTest extends TestCase
     public function testCreateEmptyName()
     {
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->createAction,
             'name' => "",
         ));
@@ -136,7 +136,7 @@ class PermissionControllerTest extends TestCase
     public function testCreateEmptyDesc()
     {
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->createAction,
             'name' => $this->testPermissionName,
             'description' => ""
@@ -154,7 +154,7 @@ class PermissionControllerTest extends TestCase
          * Duplicate entry should be rejected
          */
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->createAction,
             'name' => $this->testPermissionName,
             'description' => $this->testPermissionDesc
@@ -165,7 +165,7 @@ class PermissionControllerTest extends TestCase
             'description' => $this->testPermissionDesc
         ]);
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->createAction,
             'name' => $this->testPermissionName,
             'description' => "duplicate"
@@ -185,7 +185,7 @@ class PermissionControllerTest extends TestCase
          * Entry string cap at 255 char
          */
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->createAction,
             'name' => $this->testPermissionName,
             'description' => "superduperlong;alskdjf;alskdjf;alskdjf;alskdfj;alsdkfj;las]
@@ -215,7 +215,7 @@ class PermissionControllerTest extends TestCase
 
         $this->createDummyPermission();
 
-        $response = $this->call('POST', '/permissions', array(
+        $response = $this->call('POST', '/api/permissions', array(
             'action' => $this->readAction,
             'id' => 1,
         ));
@@ -228,7 +228,7 @@ class PermissionControllerTest extends TestCase
 
         $this->createDummyPermission();
 
-        $response = $this->call('POST', '/permissions', array(
+        $response = $this->call('POST', '/api/permissions', array(
             'action' => $this->readAction,
             'id' => 2,
         ));
@@ -242,7 +242,7 @@ class PermissionControllerTest extends TestCase
 
         $this->createDummyPermission();
 
-        $response = $this->call('POST', '/permissions', array(
+        $response = $this->call('POST', '/api/permissions', array(
             'action' => $this->readAction,
         ));
 
@@ -259,7 +259,7 @@ class PermissionControllerTest extends TestCase
 
         $this->createDummyPermission();
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -281,7 +281,7 @@ class PermissionControllerTest extends TestCase
 
         $this->createDummyPermission();
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -307,7 +307,7 @@ class PermissionControllerTest extends TestCase
 
         $this->createDummyPermission();
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "",
@@ -332,7 +332,7 @@ class PermissionControllerTest extends TestCase
 
         $this->createDummyPermission();
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -374,7 +374,7 @@ class PermissionControllerTest extends TestCase
             'id' => 1,
         ]);
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->deleteAction,
             'id' => 1,
         ));
@@ -389,7 +389,7 @@ class PermissionControllerTest extends TestCase
 
         $this->createDummyPermission();
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->deleteAction,
             'id' => 2,
         ));
@@ -404,7 +404,7 @@ class PermissionControllerTest extends TestCase
 
         $this->createDummyPermission();
 
-        $this->call('POST', '/permissions', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->deleteAction,
         ));
 
@@ -432,7 +432,7 @@ class PermissionControllerTest extends TestCase
             'id' => 4,
         ]);
 
-        $response = $this->call('POST', '/permissions', array(
+        $response = $this->call('POST', '/api/permissions', array(
             'action' => "fetchAll",
         ));
 

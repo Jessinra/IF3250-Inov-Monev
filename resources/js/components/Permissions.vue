@@ -163,6 +163,7 @@
 
 <script>
 import axios from 'axios';
+import Meta from 'vue-meta';
 
 export default {
     data() {
@@ -179,10 +180,9 @@ export default {
             showCreate: false
         }
     },
-
     methods: {
         fetchAllPermissions: function(page_url) {
-            let url = page_url || 'http://localhost:8000/permissions';
+            let url = page_url || 'http://localhost:8000/api/permissions';
             let send = {
                 action: "fetchAll" 
             };
@@ -206,7 +206,7 @@ export default {
             this.pagination = pagination;
         },
         createNewPermission: function() {
-            let url = 'http://localhost:8000/permissions';
+            let url = 'http://localhost:8000/api/permissions';
             let send = {
                 action: "create",
                 name: this.permission.name,
@@ -220,7 +220,7 @@ export default {
                 })
         },
         deletePermission: function(id) {
-            let url = 'http://localhost:8000/permissions';
+            let url = 'http://localhost:8000/api/permissions';
             let send = {
                 action: "delete",
                 id: id
@@ -251,7 +251,6 @@ export default {
                 })
         }
     },
-    
     created: function() {
         this.fetchAllPermissions();
     }
