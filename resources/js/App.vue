@@ -33,6 +33,34 @@
             Sidebar,
             Controlbar,
             Footer
+        },
+        data() {
+            return {
+                name: null,
+                isLoggedIn: localStorage.getItem('inovmonev.jwt') != null
+            }
+        },
+        mounted() {
+            this.setDefaults()
+        },
+        methods : {
+            setDefaults() {
+                if (this.isLoggedIn) {
+                    let user = JSON.parse(localStorage.getItem('inovmonev.user'))
+                    this.name = user.name
+                }
+            },
+            change() {
+                this.isLoggedIn = localStorage.getItem('inovmonev.jwt') != null
+                this.setDefaults()
+            },
+            logout(){
+                localStorage.removeItem('inovmonev.jwt')
+                localStorage.removeItem('inovmonev.user')
+                this.change()
+                this.$router.push('/')
+            }
         }
     }
+    console.log(localStorage.getItem('jwt'))
 </script>
