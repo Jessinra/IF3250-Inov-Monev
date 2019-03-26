@@ -1,9 +1,14 @@
 <template>
-    <div class="container">
-        <div class="row justify-content-center">
+    <div class="content-wrapper">
+        <div class="content-header">
+            <h1>
+                Login
+            </h1>
+        </div>
+        <div class="content">
+            <div class="row justify-content-center">
             <div class="col-md-8">
                 <div class="card card-default">
-                    <div class="card-header">Login</div>
                     <div class="card-body">
                         <form>
                             <div class="form-group row">
@@ -30,6 +35,8 @@
                 </div>
             </div>
         </div>
+        </div>
+        
     </div>
 </template>
 <script>
@@ -53,7 +60,7 @@
                         localStorage.setItem('inovmonev.user', JSON.stringify(user))
                         localStorage.setItem('inovmonev.jwt', response.data.token)
 
-                        if (localStorage.getItem('bigStore.jwt') != null) {
+                        if (localStorage.getItem('inovmonev.jwt') != null) {
                             this.$emit('loggedIn')
                             if (this.$route.params.nextUrl != null) {
                                 this.$router.push(this.$route.params.nextUrl)

@@ -2,7 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
+use Auth;
+use Validator;
 use Illuminate\Http\Request;
+use App\User;
 
 class UserController extends Controller
 {

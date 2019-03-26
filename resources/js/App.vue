@@ -2,17 +2,18 @@
     <div class="wrapper">
         <!-- Header -->
         <Header/>
-        
-        <!-- Sidebar -->
-        <Sidebar/>
+            
+        <span v-if="isLoggedIn">    
+            <!-- Sidebar -->
+            <Sidebar/>
 
-        <!-- Control Sidebar -->
-        <Controlbar/>
-        <!-- /.control-sidebar -->
-        <!-- Add the sidebar's background. This div must be placed
-        immediately after the control sidebar -->
-        <div class="control-sidebar-bg"/>
-
+            <!-- Control Sidebar -->
+            <Controlbar/>
+            <!-- /.control-sidebar -->
+            <!-- Add the sidebar's background. This div must be placed
+            immediately after the control sidebar -->
+            <div class="control-sidebar-bg"/>
+        </span>
         <!-- Content -->
         <router-view/>
 
@@ -53,14 +54,7 @@
             change() {
                 this.isLoggedIn = localStorage.getItem('inovmonev.jwt') != null
                 this.setDefaults()
-            },
-            logout(){
-                localStorage.removeItem('inovmonev.jwt')
-                localStorage.removeItem('inovmonev.user')
-                this.change()
-                this.$router.push('/')
             }
         }
     }
-    console.log(localStorage.getItem('jwt'))
 </script>

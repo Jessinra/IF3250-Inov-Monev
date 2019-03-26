@@ -11,11 +11,11 @@ class Controller extends BaseController
 {
     use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
 
-    protected function redirectIfNotLoggedIn($auth)
-    {
-        if (!$auth) {
-            return abort(403);
-        }
-        return null;
-    }
+    // protected function redirectIfNotLoggedIn($auth)
+    // {
+    //     if (!$auth) {
+    //         return abort(403);
+    //     }
+    //     return null;
+    // }
 }
