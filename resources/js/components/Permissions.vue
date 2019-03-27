@@ -163,7 +163,6 @@
 
 <script>
 import axios from 'axios';
-import Meta from 'vue-meta';
 
 export default {
     data() {
@@ -187,8 +186,16 @@ export default {
                 action: "fetchAll" 
             };
             let vm = this;
+            let options = {
+                method: 'post',
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                },
+                data: send,
+                url
+            }
 
-            axios.post(url, send)
+            axios(options)
                 .then(res => {
                     console.log(res);
                     this.permissions = res.data.data;
@@ -212,8 +219,16 @@ export default {
                 name: this.permission.name,
                 description: this.permission.description
             }
+            let options = {
+                method: 'post',
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                },
+                data: send,
+                url
+            }
 
-            axios.post(url, send)
+            axios(options)
                 .then(res => {
                     console.log(res);
                     this.fetchAllPermissions();
@@ -225,8 +240,16 @@ export default {
                 action: "delete",
                 id: id
             }
+            let options = {
+                method: 'post',
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                },
+                data: send,
+                url
+            }
 
-            axios.post(url, send)
+            axios(options)
                 .then(res => {
                     console.log(res);
                     this.fetchAllPermissions();
@@ -243,8 +266,16 @@ export default {
                 name: this.permission.name,
                 description: this.permission.description
             }
+            let options = {
+                method: 'post',
+                headers: {
+                    'Access-Control-Allow-Origin': '*'
+                },
+                data: send,
+                url
+            }
 
-            axios.post(url, send)
+            axios(options)
                 .then(res => {
                     console.log(res);
                     this.fetchAllPermissions();

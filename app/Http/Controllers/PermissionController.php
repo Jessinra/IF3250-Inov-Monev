@@ -203,8 +203,9 @@ class PermissionController extends Controller
 
     private function fetchAllPermissions()
     {
+        $permissions_per_page = 15;
         // Get permissions
-        $permissions = Permission::paginate(15);
+        $permissions = Permission::paginate($permissions_per_page);
 
         // return as a resource
         return PermissionResource::collection($permissions);
