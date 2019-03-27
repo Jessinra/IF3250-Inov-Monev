@@ -182,16 +182,13 @@ export default {
     methods: {
         fetchAllPermissions: function(page_url) {
             let url = page_url || 'http://localhost:8000/api/permissions';
-            let send = {
-                action: "fetchAll" 
+            let data = {
+                action: 'fetchAll' 
             };
             let vm = this;
             let options = {
                 method: 'post',
-                headers: {
-                    'Access-Control-Allow-Origin': '*'
-                },
-                data: send,
+                data,
                 url
             }
 
@@ -214,17 +211,14 @@ export default {
         },
         createNewPermission: function() {
             let url = 'http://localhost:8000/api/permissions';
-            let send = {
-                action: "create",
+            let data = {
+                action: 'create',
                 name: this.permission.name,
                 description: this.permission.description
             }
             let options = {
                 method: 'post',
-                headers: {
-                    'Access-Control-Allow-Origin': '*'
-                },
-                data: send,
+                data,
                 url
             }
 
@@ -236,16 +230,13 @@ export default {
         },
         deletePermission: function(id) {
             let url = 'http://localhost:8000/api/permissions';
-            let send = {
-                action: "delete",
+            let data = {
+                action: 'delete',
                 id: id
             }
             let options = {
                 method: 'post',
-                headers: {
-                    'Access-Control-Allow-Origin': '*'
-                },
-                data: send,
+                data,
                 url
             }
 
@@ -259,19 +250,16 @@ export default {
             this.permission.id = id;
         },
         updatePermission: function(id) {
-            let url = 'http://localhost:8000/permissions';
-            let send = {
-                action: "update",
+            let url = 'http://localhost:8000/api/permissions';
+            let data = {
+                action: 'update',
                 id: id,
                 name: this.permission.name,
                 description: this.permission.description
             }
             let options = {
                 method: 'post',
-                headers: {
-                    'Access-Control-Allow-Origin': '*'
-                },
-                data: send,
+                data,
                 url
             }
 
