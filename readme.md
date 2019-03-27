@@ -26,7 +26,7 @@
 7. Run `php artisan config:cache`
 8. Run `composer require laravel/passport`
 9. Run `php artisan migrate`
-10. Run `php artisan db:seed`
+10. Run `php artisan db:seed` <br/>
 		note: step 9 and 10 can be replaced by `php artisan migrate:refresh --seeds`
 11. Run `php artisan passport:install`
 12. Run `sudo npm run production`<br/>
@@ -34,7 +34,10 @@
 
 13. Please make sure that your web server already configured to `public/` folder<br/>
     Can be done by changing apache's documentRoot to `home/<path>/<to>/<project>/public/`
-14. To start server, run `php artisan serve`
+14. To start server, run `php artisan serve`<br/>
+
+username = admin@admin.com
+password = secret
 
 ## Laravel DB Migration Guide
 
