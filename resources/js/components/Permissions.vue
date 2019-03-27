@@ -182,7 +182,7 @@ export default {
 
     methods: {
         fetchAllPermissions: function(page_url) {
-            let url = page_url || 'http://localhost:8000/permissions';
+            let url = page_url || 'http://localhost:8000/api/permissions';
             let send = {
                 action: "fetchAll" 
             };
@@ -206,7 +206,7 @@ export default {
             this.pagination = pagination;
         },
         createNewPermission: function() {
-            let url = 'http://localhost:8000/permissions';
+            let url = 'http://localhost:8000/api/permissions';
             let send = {
                 action: "create",
                 name: this.permission.name,
@@ -220,7 +220,7 @@ export default {
                 })
         },
         deletePermission: function(id) {
-            let url = 'http://localhost:8000/permissions';
+            let url = 'http://localhost:8000/api/permissions';
             let send = {
                 action: "delete",
                 id: id
@@ -236,7 +236,7 @@ export default {
             this.permission.id = id;
         },
         updatePermission: function(id) {
-            let url = 'http://localhost:8000/permissions';
+            let url = 'http://localhost:8000/api/permissions';
             let send = {
                 action: "update",
                 id: id,
