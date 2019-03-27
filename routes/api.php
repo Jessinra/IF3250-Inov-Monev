@@ -17,3 +17,8 @@ use Illuminate\Http\Request;
 //     return $request->user();
 // });
 Route::post('login', 'UserController@login');
+
+
+Route::group(['middleware' => 'auth:api'], function(){
+	Route::post('/permissions', 'PermissionController@permissionManagementHandler');
+});

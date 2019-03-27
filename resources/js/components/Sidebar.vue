@@ -30,14 +30,15 @@
 
             <!-- Sidebar Menu -->
             <ul class="sidebar-menu" data-widget="tree">
-            <li class="header">Categories</li>
-            <!-- Optionally, you can add icons to the links -->
-            <li class="active"><router-link to="/dashboard">
-                <i class="fa fa-dashboard"></i>
-                <span>Dashboard</span></router-link></li>
-            <li><router-link to="/permissions">
-                <i class="fa fa-link"></i>
-                <span>Permission</span></router-link></li>
+                <li class="header">Categories</li>
+                <!-- Optionally, you can add icons to the links -->
+                <li class="active"><router-link to="/dashboard">
+                    <i class="fa fa-dashboard"></i>
+                    <span>Dashboard</span></router-link></li>
+                <li><router-link to="/permissions">
+                    <i class="fa fa-link"></i>
+                    <span>Permission</span></router-link></li>
+            </ul>
         <!-- /.sidebar-menu -->
         </div>
     <!-- /.sidebar -->
