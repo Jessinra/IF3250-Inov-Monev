@@ -70,6 +70,16 @@
                 </ul>
                 </div>
             </div>
+            <div v-if="!isLoggedIn">
+                <!-- Navbar Right Menu -->
+                <div class="navbar-custom-menu">
+                <ul class="nav navbar-nav">
+                    <li>
+                    <router-link :to="{ name: 'login' }" class="nav-link" v-if="!isLoggedIn">Login</router-link>
+                    </li>
+                </ul>
+                </div>
+            </div
         </nav>
     </header>
 </template>
