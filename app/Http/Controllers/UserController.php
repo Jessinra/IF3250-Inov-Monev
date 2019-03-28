@@ -3,15 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Group;
+use App\Http\Controllers\Controller;
 use App\Role;
 use App\User;
+use Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use Validator;
 
 class UserController extends Controller
 {
+    
+    public function login(Request $request)
+    {
+        $status = 401;
+        $response = ['error' => 'Unauthorised'];
+
+        if (Auth::attempt($request->only(['email', 'password']))) {
+            $status = 200;
+            $response = [
+                'user' => Auth::user(),
+                'token' => Auth::user()->createToken('inovmonev')->accessToken,
+            ];
+        }
+
+        return response()->json($response, $status);
+    }
+    
     public function userDashboard()
     {
         return "this is User management page";
@@ -355,6 +375,3 @@ class UserController extends Controller
         }
     }
 }
-
-
-

@@ -3,15 +3,16 @@
 namespace App\Http\Controllers;
 
 use App\Permission;
+use App\Http\Resources\Permission as PermissionResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
 
 class PermissionController extends Controller
 {
-    public function permissionDashboard()
+    public function permissions()
     {
-        return "this is Permission management page";
+        return view('pages.permissions');
     }
 
     public function permissionManagementHandler(Request $request)
@@ -42,8 +43,8 @@ class PermissionController extends Controller
         } else if ($action == "fetchAll") {
 
 //          TODO: change this to display correct view
-            return $this->fetchAllPermission();
-
+            return $this->fetchAllPermissions();
+            
         } else if ($action == null) {
 
 //          TODO : return using abort(404);
@@ -66,7 +67,6 @@ class PermissionController extends Controller
 
     private function isCreateDataValid($data)
     {
-
         $validator = Validator::make($data, [
             'name' => ['required', 'string', 'max:255', 'unique:permissions'],
             'description' => ['string', 'max:255']
@@ -134,7 +134,7 @@ class PermissionController extends Controller
 
         return !($validator->fails());
     }
-
+    
     private function updatePermission($data)
     {
         $data = $this->parseUpdateData($data);
@@ -200,13 +200,14 @@ class PermissionController extends Controller
         </div>';
     }
 
-    private function fetchAllPermission()
+    private function fetchAllPermissions()
     {
+        $permissions_per_page = 15;
+        
+        // Get permissions
+        $permissions = Permission::paginate($permissions_per_page);
 
-        try {
-            return Permission::all();
-        } catch (\Exception $e) {
-            return [];
-        }
+        // return as a resource
+        return PermissionResource::collection($permissions);
     }
 }

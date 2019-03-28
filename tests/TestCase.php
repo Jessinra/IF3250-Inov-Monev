@@ -26,7 +26,7 @@ abstract class TestCase extends BaseTestCase
     protected function createDummyPermission($copy = "")
     {
 
-        $this->call('POST', '/permission', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->createAction,
             'name' => $this->testPermissionName . $copy,
             'description' => $this->testPermissionDesc . $copy
