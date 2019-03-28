@@ -60,30 +60,6 @@
                         </li>
                     </ul>
                 </div>
-                
-                <!-- alternative create new permission box -->
-                <!-- <div class="box box-primary">
-                    <div class="box-header with-border">
-                        <div class="box-title">Create new permission</div>
-                    </div>
-                    <form @submit.prevent="createNewPermission" role="form">
-                        <div class="box-body">
-                            <div class="form-group">
-                                <label for="inputName">Name</label>
-                                <input type="text" class="form-control" id="inputName" 
-                                placeholder="Enter permission's name" v-model="permission.name">
-                            </div>
-                            <div class="form-group">
-                                <label for="inputDesc">Description</label>
-                                <input type="text" class="form-control" id="inputDesc" 
-                                placeholder="Enter permission's description" v-model="permission.description">
-                            </div>
-                        </div>
-                        <div class="box-footer">
-                            <button type="submit" class="btn btn-primary">Submit</button>
-                        </div>
-                    </form>
-                </div> -->
             </div>
         </div> <!-- /.content -->
 
@@ -174,9 +150,7 @@ export default {
                 description: ''
             },
             permission_id: '',
-            pagination: {},
-            showUpdate: false,
-            showCreate: false
+            pagination: {}
         }
     },
     methods: {
