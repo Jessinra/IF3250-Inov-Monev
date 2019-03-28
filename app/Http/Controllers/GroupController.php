@@ -2,20 +2,19 @@
 
 namespace App\Http\Controllers;
 
-use App\Permission;
-use App\Http\Resources\Permission as PermissionResource;
+use App\Group;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
-
-class PermissionController extends Controller
+class GroupController extends Controller
 {
-    public function permissions()
+
+    public function groupDashboard()
     {
-        return view('pages.permissions');
+        return "this is Group management page";
     }
 
-    public function permissionManagementHandler(Request $request)
+    public function groupManagementHandler(Request $request)
     {
 
 //         TODO: enable this after able to create user
@@ -27,24 +26,24 @@ class PermissionController extends Controller
 
         $action = isset($data['action']) ? $data['action'] : null;
         if ($action == "create") {
-            $this->createNewPermission($data);
+            $this->createNewGroup($data);
 
         } else if ($action == "read") {
 
 //          TODO: change this to display correct view
-            return $this->readPermission($data);
+            return $this->readGroup($data);
 
         } else if ($action == "update") {
-            $this->updatePermission($data);
+            $this->updateGroup($data);
 
         } else if ($action == "delete") {
-            $this->deletePermission($data);
+            $this->deleteGroup($data);
 
         } else if ($action == "fetchAll") {
 
 //          TODO: change this to display correct view
-            return $this->fetchAllPermissions();
-            
+            return $this->fetchAllGroup();
+
         } else if ($action == null) {
 
 //          TODO : return using abort(404);
@@ -52,8 +51,8 @@ class PermissionController extends Controller
         }
 
 //      TODO: change this to proper page
-//      return view('PermissionManagement');
-        return "this is Permission management page";
+//      return view('GroupManagement');
+        return "this is Group management page";
 
     }
 
@@ -67,51 +66,59 @@ class PermissionController extends Controller
 
     private function isCreateDataValid($data)
     {
+
         $validator = Validator::make($data, [
-            'name' => ['required', 'string', 'max:255', 'unique:permissions'],
+            'name' => ['required', 'string', 'max:255', 'unique:groups'],
             'description' => ['string', 'max:255']
         ]);
 
         return !($validator->fails());
     }
 
-    private function createNewPermission($data)
+    private function createNewGroup($data)
     {
         $data = $this->parseCreateData($data);
 
         if (!($this->isCreateDataValid($data))) {
-            $this->displayCreatePermissionFailed();
+            $this->displayCreateGroupFailed();
             return null;
         }
 
-        $newPermission = Permission::create($data);
-        $this->displayCreatePermissionSucceeded();
+        $newGroup = Group::create($data);
+        $this->displayCreateGroupSucceeded();
 
-        return $newPermission;
+        return $newGroup;
     }
 
-    private function displayCreatePermissionFailed()
+    private function displayCreateGroupFailed()
     {
         echo '<div class="alert alert-danger alert-dismissible fade show text-center">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Failed !</strong> Permission cannot be created!
+        <strong>Failed !</strong> Group cannot be created!
         </div>';
     }
 
-    private function displayCreatePermissionSucceeded()
+    private function displayCreateGroupSucceeded()
     {
         echo '<div class="alert alert-success alert-dismissible fade show text-center">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Success !</strong> New Permission has been created!
+        <strong>Success !</strong> New Group has been created!
         </div>';
     }
 
-
-    private function readPermission($data)
+    private function readGroup($data)
     {
-        return Permission::findOrNew(
+        return Group::findOrNew(
             isset($data['id']) ? $data['id'] : null
         );
+    }
+
+    private function displayReadGroupFailed()
+    {
+        echo '<div class="alert alert-danger alert-dismissible fade show text-center">
+        <button type="button" class="close" data-dismiss="alert">&times;</button>
+        <strong>Failed !</strong> Group not found!
+        </div>';
     }
 
     private function parseUpdateData($data)
@@ -128,86 +135,85 @@ class PermissionController extends Controller
 
         $validator = Validator::make($data, [
             'id' => ['required', 'string'],
-            'name' => ['required', 'string', 'max:255', 'unique:permissions'],
+            'name' => ['required', 'string', 'max:255', 'unique:groups'],
             'description' => ['string', 'max:255']
         ]);
 
         return !($validator->fails());
     }
-    
-    private function updatePermission($data)
+
+    private function updateGroup($data)
     {
         $data = $this->parseUpdateData($data);
 
         if (!($this->isUpdateDataValid($data))) {
-            $this->displayUpdatePermissionFailed();
+            $this->displayUpdateGroupFailed();
             return null;
         }
 
-        $permission = Permission::find($data['id']);
-        $permission['name'] = $data['name'];
-        $permission['description'] = $data['description'];
-        $permission->save();
+        $group = Group::find($data['id']);
+        $group['name'] = $data['name'];
+        $group['description'] = $data['description'];
+        $group->save();
 
-        $this->displayUpdatePermissionSucceeded();
-        return $permission;
+        $this->displayUpdateGroupSucceeded();
+        return $group;
     }
 
-    private function displayUpdatePermissionFailed()
+    private function displayUpdateGroupFailed()
     {
         echo '<div class="alert alert-danger alert-dismissible fade show text-center">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Failed !</strong> Permission cannot be updated!
+        <strong>Failed !</strong> Group cannot be updated!
         </div>';
     }
 
-    private function displayUpdatePermissionSucceeded()
+    private function displayUpdateGroupSucceeded()
     {
         echo '<div class="alert alert-success alert-dismissible fade show text-center">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Success !</strong> Permission has been edited!
+        <strong>Success !</strong> Group has been edited!
         </div>';
     }
 
-    private function deletePermission(array $data)
+    private function deleteGroup(array $data)
     {
-        $permission = Permission::find(
+        $group = Group::find(
             isset($data['id']) ? $data['id'] : null
         );
 
-        if ($permission) {
-            $permission->delete();
-            $this->displayDeletePermissionSucceeded();
+        if ($group) {
+            $group->delete();
+            $this->displayDeleteGroupSucceeded();
 
         } else {
-            $this->displayDeletePermissionFailed();
+            $this->displayDeleteGroupFailed();
         }
     }
 
-    private function displayDeletePermissionFailed()
+    private function displayDeleteGroupFailed()
     {
         echo '<div class="alert alert-danger alert-dismissible fade show text-center">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Failed !</strong> Permission cannot be deleted!
+        <strong>Failed !</strong> Group cannot be deleted!
         </div>';
     }
 
-    private function displayDeletePermissionSucceeded()
+    private function displayDeleteGroupSucceeded()
     {
         echo '<div class="alert alert-success alert-dismissible fade show text-center">
         <button type="button" class="close" data-dismiss="alert">&times;</button>
-        <strong>Success !</strong> Permission has been deleted!
+        <strong>Success !</strong> Group has been deleted!
         </div>';
     }
 
-    private function fetchAllPermissions()
+    private function fetchAllGroup()
     {
-        $permissions_per_page = 15;
-        
-        // Get permissions
-        $permissions = Permission::paginate($permissions_per_page);
 
-        // return as a resource
-        return PermissionResource::collection($permissions);
+        try {
+            return Group::all();
+        } catch (\Exception $e) {
+            return [];
+        }
     }
 }

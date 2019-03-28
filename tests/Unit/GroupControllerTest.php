@@ -6,8 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\TestCase;
 
-
-class PermissionControllerTest extends TestCase
+class GroupControllerTest extends TestCase
 {
     use RefreshDatabase;
 
@@ -16,8 +15,8 @@ class PermissionControllerTest extends TestCase
     private $updateAction = "update";
     private $deleteAction = "delete";
 
-    private $testPermissionName = "test permission";
-    private $testPermissionDesc = 'permission for test only';
+    private $testGroupName = "test group";
+    private $testGroupDesc = 'group for test only';
 
     public function setUp(): void
     {
@@ -26,7 +25,7 @@ class PermissionControllerTest extends TestCase
         $this->withoutExceptionHandling();          // show error stacktrace
 
         DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('permissions')->truncate();   // reset id increment
+        DB::table('groups')->truncate();   // reset id increment
         DB::statement('SET FOREIGN_KEY_CHECKS=1;');
 
         $this->setOutputCallback(function () {
@@ -40,15 +39,16 @@ class PermissionControllerTest extends TestCase
     public function testGETRoute()
     {
 
-        $response = $this->get('/permissions');
+        $response = $this->get('/group');
 
         $response->assertStatus(200);
+        $response->assertSee("Group management page");
     }
 
     public function testPOSTRouteWithoutAction()
     {
 
-        $response = $this->call('POST', '/api/permissions', array());
+        $response = $this->call('POST', '/group', array());
 
         $response->assertStatus(200);
         $response->assertSee("abort 404");
@@ -57,12 +57,12 @@ class PermissionControllerTest extends TestCase
     public function testPOSTRouteWithAction()
     {
 
-        $response = $this->call('POST', '/api/permissions', array(
+        $response = $this->call('POST', '/group', array(
             'action' => 'test only',
         ));
 
         $response->assertStatus(200);
-        $response->assertSee("Permission management page");
+        $response->assertSee("Group management page");
     }
 
 //    TODO: Test authorized
@@ -74,48 +74,48 @@ class PermissionControllerTest extends TestCase
     public function testCreate()
     {
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->createAction,
-            'name' => $this->testPermissionName,
-            'description' => $this->testPermissionDesc
+            'name' => $this->testGroupName,
+            'description' => $this->testGroupDesc
         ));
 
-        $this->assertDatabaseHas('permissions', [
-            'name' => $this->testPermissionName,
-            'description' => $this->testPermissionDesc
+        $this->assertDatabaseHas('groups', [
+            'name' => $this->testGroupName,
+            'description' => $this->testGroupDesc
         ]);
     }
 
     public function testCreateWithoutName()
     {
         /*
-         *   Creating permission without name is not allowed
+         *   Creating group without name is not allowed
          */
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->createAction,
-            'description' => $this->testPermissionDesc
+            'description' => $this->testGroupDesc
         ));
 
-        $this->assertDatabaseMissing('permissions', [
-            'name' => $this->testPermissionName,
-            'description' => $this->testPermissionDesc
+        $this->assertDatabaseMissing('groups', [
+            'name' => $this->testGroupName,
+            'description' => $this->testGroupDesc
         ]);
     }
 
     public function testCreateWithoutDescription()
     {
         /*
-         *   Creating permission without desc is not allowed
+         *   Creating group without desc is not allowed
          */
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->createAction,
-            'name' => $this->testPermissionName,
+            'name' => $this->testGroupName,
         ));
 
-        $this->assertDatabaseMissing('permissions', [
-            'name' => $this->testPermissionName,
+        $this->assertDatabaseMissing('groups', [
+            'name' => $this->testGroupName,
         ]);
 
     }
@@ -123,12 +123,12 @@ class PermissionControllerTest extends TestCase
     public function testCreateEmptyName()
     {
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->createAction,
             'name' => "",
         ));
 
-        $this->assertDatabaseMissing('permissions', [
+        $this->assertDatabaseMissing('groups', [
             'name' => "",
         ]);
     }
@@ -136,14 +136,14 @@ class PermissionControllerTest extends TestCase
     public function testCreateEmptyDesc()
     {
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->createAction,
-            'name' => $this->testPermissionName,
+            'name' => $this->testGroupName,
             'description' => ""
         ));
 
-        $this->assertDatabaseHas('permissions', [
-            'name' => $this->testPermissionName,
+        $this->assertDatabaseHas('groups', [
+            'name' => $this->testGroupName,
             'description' => ""
         ]);
     }
@@ -154,25 +154,25 @@ class PermissionControllerTest extends TestCase
          * Duplicate entry should be rejected
          */
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->createAction,
-            'name' => $this->testPermissionName,
-            'description' => $this->testPermissionDesc
+            'name' => $this->testGroupName,
+            'description' => $this->testGroupDesc
         ));
 
-        $this->assertDatabaseHas('permissions', [
-            'name' => $this->testPermissionName,
-            'description' => $this->testPermissionDesc
+        $this->assertDatabaseHas('groups', [
+            'name' => $this->testGroupName,
+            'description' => $this->testGroupDesc
         ]);
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->createAction,
-            'name' => $this->testPermissionName,
+            'name' => $this->testGroupName,
             'description' => "duplicate"
         ));
 
-        $this->assertDatabaseMissing('permissions', [
-            'name' => $this->testPermissionName,
+        $this->assertDatabaseMissing('groups', [
+            'name' => $this->testGroupName,
             'description' => "duplicate"
         ]);
 
@@ -185,9 +185,9 @@ class PermissionControllerTest extends TestCase
          * Entry string cap at 255 char
          */
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->createAction,
-            'name' => $this->testPermissionName,
+            'name' => $this->testGroupName,
             'description' => "superduperlong;alskdjf;alskdjf;alskdjf;alskdfj;alsdkfj;las]
             ;laskdjf;alsdkfj;asldfkja;sldfkja;sdlfkajs;dflkajs;dflkajsdf;lkasjf;aksdjfasd
             ;aldfkja;lsdkfja;sldfkja;sdflkjas;dflkasjdf;lkasjdf;laskdjf;alkdjasdfasdfsadf
@@ -201,10 +201,13 @@ class PermissionControllerTest extends TestCase
             "
         ));
 
-        $this->assertDatabaseMissing('permissions', [
-            'name' => $this->testPermissionName,
+        $this->assertDatabaseMissing('groups', [
+            'name' => $this->testGroupName,
         ]);
     }
+
+
+
 
     /*===========================================
                 Read section
@@ -213,41 +216,41 @@ class PermissionControllerTest extends TestCase
     public function testRead()
     {
 
-        $this->createDummyPermission();
+        $this->createDummyGroup();
 
-        $response = $this->call('POST', '/api/permissions', array(
+        $response = $this->call('POST', '/group', array(
             'action' => $this->readAction,
             'id' => 1,
         ));
 
-        $response->assertSee($this->testPermissionName);
+        $response->assertSee($this->testGroupName);
     }
 
     public function testReadNotFound()
     {
 
-        $this->createDummyPermission();
+        $this->createDummyGroup();
 
-        $response = $this->call('POST', '/api/permissions', array(
+        $response = $this->call('POST', '/group', array(
             'action' => $this->readAction,
             'id' => 2,
         ));
 
         $response->assertSee('[]');
-        $response->assertDontSee($this->testPermissionName);
+        $response->assertDontSee($this->testGroupName);
     }
 
     public function testReadWithoutId()
     {
 
-        $this->createDummyPermission();
+        $this->createDummyGroup();
 
-        $response = $this->call('POST', '/api/permissions', array(
+        $response = $this->call('POST', '/group', array(
             'action' => $this->readAction,
         ));
 
         $response->assertSee('[]');
-        $response->assertDontSee($this->testPermissionName);
+        $response->assertDontSee($this->testGroupName);
     }
 
     /*===========================================
@@ -257,16 +260,16 @@ class PermissionControllerTest extends TestCase
     public function testUpdate()
     {
 
-        $this->createDummyPermission();
+        $this->createDummyGroup();
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
             'description' => "updatedDesc"
         ));
 
-        $this->assertDatabaseHas('permissions', [
+        $this->assertDatabaseHas('groups', [
             'id' => 1,
             'name' => "updatedName",
             'description' => "updatedDesc"
@@ -279,23 +282,23 @@ class PermissionControllerTest extends TestCase
          * Missing field should not be accepted (corrupt request)
          */
 
-        $this->createDummyPermission();
+        $this->createDummyGroup();
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
         ));
 
-        $this->assertDatabaseMissing('permissions', [
+        $this->assertDatabaseMissing('groups', [
             'id' => 1,
             'name' => "updatedName",
         ]);
 
-        $this->assertDatabaseHas('permissions', [
+        $this->assertDatabaseHas('groups', [
             'id' => 1,
-            'name' => $this->testPermissionName,
-            'description' => $this->testPermissionDesc
+            'name' => $this->testGroupName,
+            'description' => $this->testGroupDesc
         ]);
     }
 
@@ -305,34 +308,34 @@ class PermissionControllerTest extends TestCase
          * Empty field should not be accepted
          */
 
-        $this->createDummyPermission();
+        $this->createDummyGroup();
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "",
             'description' => ""
         ));
 
-        $this->assertDatabaseMissing('permissions', [
+        $this->assertDatabaseMissing('groups', [
             'id' => 1,
             'name' => "",
             'description' => ""
         ]);
 
-        $this->assertDatabaseHas('permissions', [
+        $this->assertDatabaseHas('groups', [
             'id' => 1,
-            'name' => $this->testPermissionName,
-            'description' => $this->testPermissionDesc
+            'name' => $this->testGroupName,
+            'description' => $this->testGroupDesc
         ]);
     }
 
     public function testUpdateEntryTooLong()
     {
 
-        $this->createDummyPermission();
+        $this->createDummyGroup();
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -349,15 +352,15 @@ class PermissionControllerTest extends TestCase
             "
         ));
 
-        $this->assertDatabaseMissing('permissions', [
+        $this->assertDatabaseMissing('groups', [
             'id' => 1,
             'name' => "updatedName",
         ]);
 
-        $this->assertDatabaseHas('permissions', [
+        $this->assertDatabaseHas('groups', [
             'id' => 1,
-            'name' => $this->testPermissionName,
-            'description' => $this->testPermissionDesc
+            'name' => $this->testGroupName,
+            'description' => $this->testGroupDesc
         ]);
     }
 
@@ -368,18 +371,18 @@ class PermissionControllerTest extends TestCase
     public function testDelete()
     {
 
-        $this->createDummyPermission();
+        $this->createDummyGroup();
 
-        $this->assertDatabaseHas('permissions', [
+        $this->assertDatabaseHas('groups', [
             'id' => 1,
         ]);
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->deleteAction,
             'id' => 1,
         ));
 
-        $this->assertDatabaseMissing('permissions', [
+        $this->assertDatabaseMissing('groups', [
             'id' => 1,
         ]);
     }
@@ -387,14 +390,14 @@ class PermissionControllerTest extends TestCase
     public function testDeleteNotFound()
     {
 
-        $this->createDummyPermission();
+        $this->createDummyGroup();
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->deleteAction,
             'id' => 2,
         ));
 
-        $this->assertDatabaseHas('permissions', [
+        $this->assertDatabaseHas('groups', [
             'id' => 1,
         ]);
     }
@@ -402,13 +405,13 @@ class PermissionControllerTest extends TestCase
     public function testDeleteWithoutId()
     {
 
-        $this->createDummyPermission();
+        $this->createDummyGroup();
 
-        $this->call('POST', '/api/permissions', array(
+        $this->call('POST', '/group', array(
             'action' => $this->deleteAction,
         ));
 
-        $this->assertDatabaseHas('permissions', [
+        $this->assertDatabaseHas('groups', [
             'id' => 1,
         ]);
     }
@@ -420,24 +423,24 @@ class PermissionControllerTest extends TestCase
     public function testFetchAll()
     {
 
-        $this->createDummyPermission(1);
-        $this->createDummyPermission(2);
-        $this->createDummyPermission(3);
+        $this->createDummyGroup(1);
+        $this->createDummyGroup(2);
+        $this->createDummyGroup(3);
 
-        $this->assertDatabaseHas('permissions', [
+        $this->assertDatabaseHas('groups', [
             'id' => [1, 2, 3],
         ]);
 
-        $this->assertDatabaseMissing('permissions', [
+        $this->assertDatabaseMissing('groups', [
             'id' => 4,
         ]);
 
-        $response = $this->call('POST', '/api/permissions', array(
+        $response = $this->call('POST', '/group', array(
             'action' => "fetchAll",
         ));
 
-        $response->assertSee($this->testPermissionName . "1");
-        $response->assertSee($this->testPermissionName . "2");
-        $response->assertSee($this->testPermissionName . "3");
+        $response->assertSee($this->testGroupName . "1");
+        $response->assertSee($this->testGroupName . "2");
+        $response->assertSee($this->testGroupName . "3");
     }
 }

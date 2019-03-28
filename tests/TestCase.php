@@ -18,6 +18,10 @@ abstract class TestCase extends BaseTestCase
     private $testRoleName = "test role";
     private $testRoleDesc = 'role for test only';
     private $testPermissionCount = 2;
+    private $testName = "test user";
+    private $testUsername = 'test username';
+    private $testEmail = "testemail@email.com";
+    private $testPassword = "test pass";
 
     protected function createDummyPermission($copy = "")
     {
@@ -52,6 +56,23 @@ abstract class TestCase extends BaseTestCase
             'permissionCount' => $this->testPermissionCount,
             'permission0' => 1,
             'permission1' => 2
+        ));
+    }
+
+    protected function createDummyUser($copy = "")
+    {
+        $this->createDummyRole();
+        $this->createDummyGroup();
+
+        $this->call('POST', '/user', array(
+            'action' => $this->createAction,
+            'name' => $this->testName . $copy,
+            'username' => $this->testUsername . $copy,
+            'email' => $this->testEmail . $copy,
+            'password' => $this->testPassword,
+            'password_confirmation' => $this->testPassword,
+            'roleId' => 1,
+            'groupId' => 1,
         ));
     }
 }
