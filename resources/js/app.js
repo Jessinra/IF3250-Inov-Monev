@@ -13,6 +13,24 @@ const router = new VueRouter({
     routes: routes
 })
 
+router.beforeEach((to, from, next) => {
+    if (to.matched.some(record => record.meta.requiresAuth)) {
+        console.log("checked");
+        console.log(localStorage.getItem('inovmonev.jwt'));
+        if (localStorage.getItem('inovmonev.jwt') == null) {
+            next({
+                path: '/login',
+                params: { nextUrl: to.fullPath }
+            })
+        } else {
+            let user = JSON.parse(localStorage.getItem('inovmonev.user'))
+            next()
+        }
+    } else {
+        next()
+    }
+})
+
 const app = new Vue({
     render: h => h(App),
     router
