@@ -1,9 +1,9 @@
 <template>
     <div class="wrapper">
-        <!-- Header -->
-        <Header/>
-            
-        <span v-if="isLoggedIn">    
+        <div v-if="showComponents">
+            <!-- Header -->
+            <Header/>
+                
             <!-- Sidebar -->
             <Sidebar/>
 
@@ -13,12 +13,15 @@
             <!-- Add the sidebar's background. This div must be placed
             immediately after the control sidebar -->
             <div class="control-sidebar-bg"/>
-        </span>
+        </div>
+    
         <!-- Content -->
         <router-view/>
 
         <!-- Main Footer -->
-        <Footer/>
+        <div v-if="showComponents">
+            <Footer/>
+        </div>
     </div>
 </template>
 <script>
@@ -38,7 +41,8 @@
         data() {
             return {
                 name: null,
-                isLoggedIn: localStorage.getItem('inovmonev.jwt') != null
+                isLoggedIn: localStorage.getItem('inovmonev.jwt') != null,
+                showComponents: this.isLoggedIn
             }
         },
         mounted() {
@@ -46,6 +50,7 @@
         },
         methods : {
             setDefaults() {
+                this.showComponents = this.isLoggedIn
                 if (this.isLoggedIn) {
                     let user = JSON.parse(localStorage.getItem('inovmonev.user'))
                     this.name = user.name
@@ -54,6 +59,17 @@
             change() {
                 this.isLoggedIn = localStorage.getItem('inovmonev.jwt') != null
                 this.setDefaults()
+            }
+        },
+        watch: {
+            $route: function() {
+                if (this.$route.name != 'login') {
+                    console.log('watched true');
+                    this.showComponents = true;
+                } else {
+                    console.log('watched false');
+                    this.showComponents = false;
+                }
             }
         }
     }
