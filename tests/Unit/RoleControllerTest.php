@@ -42,16 +42,16 @@ class RoleControllerTest extends TestCase
     public function testGETRoute()
     {
 
-        $response = $this->get('/role');
+        $response = $this->get('/api/role');
 
         $response->assertStatus(200);
-        $response->assertSee("Role management page");
+//        $response->assertSee("Role management page");
     }
 
     public function testPOSTRouteWithoutAction()
     {
 
-        $response = $this->call('POST', '/role', array());
+        $response = $this->call('POST', '/api/role', array());
 
         $response->assertStatus(200);
         $response->assertSee("abort 404");
@@ -60,7 +60,7 @@ class RoleControllerTest extends TestCase
     public function testPOSTRouteWithAction()
     {
 
-        $response = $this->call('POST', '/role', array(
+        $response = $this->call('POST', '/api/role', array(
             'action' => 'test only',
         ));
 
@@ -80,7 +80,7 @@ class RoleControllerTest extends TestCase
         $this->createDummyPermission("1");
         $this->createDummyPermission("2");
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'name' => $this->testRoleName,
             'description' => $this->testRoleDesc,
@@ -107,7 +107,7 @@ class RoleControllerTest extends TestCase
          *   Creating role without name is not allowed
          */
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'description' => $this->testRoleDesc
         ));
@@ -121,7 +121,7 @@ class RoleControllerTest extends TestCase
     public function testCreateEmptyName()
     {
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'name' => "",
         ));
@@ -137,7 +137,7 @@ class RoleControllerTest extends TestCase
          *   Creating role without desc is not allowed
          */
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'name' => $this->testRoleName,
         ));
@@ -151,7 +151,7 @@ class RoleControllerTest extends TestCase
     public function testCreateEmptyDesc()
     {
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'name' => $this->testRoleName,
             'description' => ""
@@ -166,7 +166,7 @@ class RoleControllerTest extends TestCase
     public function testCreateWithoutPermission()
     {
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'name' => $this->testRoleName,
             'description' => $this->testRoleDesc,
@@ -187,7 +187,7 @@ class RoleControllerTest extends TestCase
     public function testCreateEmptyPermission()
     {
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'name' => $this->testRoleName,
             'description' => $this->testRoleDesc,
@@ -209,7 +209,7 @@ class RoleControllerTest extends TestCase
     public function testCreateNonExistPermission()
     {
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'name' => $this->testRoleName,
             'description' => $this->testRoleDesc,
@@ -235,7 +235,7 @@ class RoleControllerTest extends TestCase
          * Duplicate entry should be rejected
          */
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'name' => $this->testRoleName,
             'description' => $this->testRoleDesc
@@ -246,7 +246,7 @@ class RoleControllerTest extends TestCase
             'description' => $this->testRoleDesc
         ]);
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'name' => $this->testRoleName,
             'description' => "duplicate"
@@ -266,7 +266,7 @@ class RoleControllerTest extends TestCase
          * Entry string cap at 255 char
          */
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'name' => $this->testRoleName,
             'description' => "superduperlong;alskdjf;alskdjf;alskdjf;alskdfj;alsdkfj;las]
@@ -297,7 +297,7 @@ class RoleControllerTest extends TestCase
 
         $this->createDummyRole();
 
-        $response = $this->call('POST', '/role', array(
+        $response = $this->call('POST', '/api/role', array(
             'action' => $this->readAction,
             'id' => 1,
         ));
@@ -310,7 +310,7 @@ class RoleControllerTest extends TestCase
 
         $this->createDummyRole();
 
-        $response = $this->call('POST', '/role', array(
+        $response = $this->call('POST', '/api/role', array(
             'action' => $this->readAction,
             'id' => 2,
         ));
@@ -324,7 +324,7 @@ class RoleControllerTest extends TestCase
 
         $this->createDummyRole();
 
-        $response = $this->call('POST', '/role', array(
+        $response = $this->call('POST', '/api/role', array(
             'action' => $this->readAction,
         ));
 
@@ -341,7 +341,7 @@ class RoleControllerTest extends TestCase
 
         $this->createDummyRole();
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -375,7 +375,7 @@ class RoleControllerTest extends TestCase
 
         $this->createDummyRole();
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -401,7 +401,7 @@ class RoleControllerTest extends TestCase
 
         $this->createDummyRole();
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "",
@@ -428,7 +428,7 @@ class RoleControllerTest extends TestCase
 
         $this->createDummyRole();
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -465,7 +465,7 @@ class RoleControllerTest extends TestCase
 
         $this->createDummyRole();
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -509,7 +509,7 @@ class RoleControllerTest extends TestCase
 
         $this->createDummyRole();
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -549,7 +549,7 @@ class RoleControllerTest extends TestCase
             'id' => 1,
         ]);
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->deleteAction,
             'id' => 1,
         ));
@@ -569,7 +569,7 @@ class RoleControllerTest extends TestCase
 
         $this->createDummyRole();
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->deleteAction,
             'id' => 2,
         ));
@@ -589,7 +589,7 @@ class RoleControllerTest extends TestCase
 
         $this->createDummyRole();
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->deleteAction,
         ));
 
@@ -612,7 +612,7 @@ class RoleControllerTest extends TestCase
         $this->createDummyRole("1");
         $this->createDummyRole("2");
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->deleteAction,
             'id' => 1,
         ));
@@ -649,7 +649,7 @@ class RoleControllerTest extends TestCase
         $this->createDummyRole();
 
         // Delete the permission
-        $this->call('POST', '/permission', array(
+        $this->call('POST', '/api/permissions', array(
             'action' => $this->deleteAction,
             'id' => 1,
         ));
@@ -690,7 +690,7 @@ class RoleControllerTest extends TestCase
             'id' => 4,
         ]);
 
-        $response = $this->call('POST', '/role', array(
+        $response = $this->call('POST', '/api/role', array(
             'action' => "fetchAll",
         ));
 

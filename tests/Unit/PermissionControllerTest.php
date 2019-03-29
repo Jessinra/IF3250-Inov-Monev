@@ -43,6 +43,7 @@ class PermissionControllerTest extends TestCase
         $response = $this->get('/permissions');
 
         $response->assertStatus(200);
+
     }
 
     public function testPOSTRouteWithoutAction()

@@ -36,7 +36,7 @@ abstract class TestCase extends BaseTestCase
     protected function createDummyGroup($copy = "")
     {
 
-        $this->call('POST', '/group', array(
+        $this->call('POST', '/api/group', array(
             'action' => $this->createAction,
             'name' => $this->testGroupName . $copy,
             'description' => $this->testGroupDesc . $copy
@@ -49,7 +49,7 @@ abstract class TestCase extends BaseTestCase
         $this->createDummyPermission("1");
         $this->createDummyPermission("2");
 
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->createAction,
             'name' => $this->testRoleName . $copy,
             'description' => $this->testRoleDesc . $copy,
@@ -64,7 +64,7 @@ abstract class TestCase extends BaseTestCase
         $this->createDummyRole();
         $this->createDummyGroup();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName . $copy,
             'username' => $this->testUsername . $copy,

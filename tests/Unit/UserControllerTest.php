@@ -50,13 +50,13 @@ class UserControllerTest extends TestCase
         $response = $this->get('/user');
 
         $response->assertStatus(200);
-        $response->assertSee("User management page");
+//        $response->assertSee("User management page");
     }
 
     public function testPOSTRouteWithoutAction()
     {
 
-        $response = $this->call('POST', '/user', array());
+        $response = $this->call('POST', '/api/user', array());
 
         $response->assertStatus(200);
         $response->assertSee("abort 404");
@@ -65,7 +65,7 @@ class UserControllerTest extends TestCase
     public function testPOSTRouteWithAction()
     {
 
-        $response = $this->call('POST', '/user', array(
+        $response = $this->call('POST', '/api/user', array(
             'action' => 'test only',
         ));
 
@@ -81,7 +81,7 @@ class UserControllerTest extends TestCase
 
     public function testCreateUserOnly()
     {
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -100,7 +100,7 @@ class UserControllerTest extends TestCase
 
     public function testCreateWrongPasswordConfirmation()
     {
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -121,7 +121,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyRole();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -148,7 +148,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyGroup();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -177,7 +177,7 @@ class UserControllerTest extends TestCase
          *   Creating user without name is not allowed
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'username' => $this->testUsername,
             'email' => $this->testEmail,
@@ -197,7 +197,7 @@ class UserControllerTest extends TestCase
         *   Creating user empty name is not allowed
         */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => "",
             'username' => $this->testUsername,
@@ -218,7 +218,7 @@ class UserControllerTest extends TestCase
          *   Creating user without username is not allowed
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'email' => $this->testEmail,
@@ -236,7 +236,7 @@ class UserControllerTest extends TestCase
     public function testCreateEmptyUsername()
     {
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => "",
@@ -254,7 +254,7 @@ class UserControllerTest extends TestCase
     public function testCreateWithoutEmail()
     {
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -272,7 +272,7 @@ class UserControllerTest extends TestCase
     public function testCreateEmptyEmail()
     {
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -292,7 +292,7 @@ class UserControllerTest extends TestCase
     public function testCreateWithoutPassword()
     {
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -310,7 +310,7 @@ class UserControllerTest extends TestCase
     public function testCreateEmptyPassword()
     {
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -329,7 +329,7 @@ class UserControllerTest extends TestCase
 
     public function testCreateNonExistRole()
     {
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -354,7 +354,7 @@ class UserControllerTest extends TestCase
 
     public function testCreateEmptyRole()
     {
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -378,7 +378,7 @@ class UserControllerTest extends TestCase
 
     public function testCreateNonExistGroup()
     {
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -403,7 +403,7 @@ class UserControllerTest extends TestCase
 
     public function testCreateEmptyGroup()
     {
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -431,7 +431,7 @@ class UserControllerTest extends TestCase
          * Duplicate entry should be rejected
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -447,7 +447,7 @@ class UserControllerTest extends TestCase
             'email' => $this->testEmail,
         ]);
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -470,7 +470,7 @@ class UserControllerTest extends TestCase
          *  Its ok :)
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -486,7 +486,7 @@ class UserControllerTest extends TestCase
             'email' => $this->testEmail,
         ]);
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername . "2",
@@ -510,7 +510,7 @@ class UserControllerTest extends TestCase
          * Entry string cap at 255 char
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => "superduperlong;alskdjf;alskdjf;alskdjf;alskdfj;alsdkfj;las]
@@ -544,7 +544,7 @@ class UserControllerTest extends TestCase
 
         $this->createDummyUser();
 
-        $response = $this->call('POST', '/user', array(
+        $response = $this->call('POST', '/api/user', array(
             'action' => $this->readAction,
             'id' => 1,
         ));
@@ -557,7 +557,7 @@ class UserControllerTest extends TestCase
 
         $this->createDummyUser();
 
-        $response = $this->call('POST', '/user', array(
+        $response = $this->call('POST', '/api/user', array(
             'action' => $this->readAction,
             'id' => 2,
         ));
@@ -571,7 +571,7 @@ class UserControllerTest extends TestCase
 
         $this->createDummyUser();
 
-        $response = $this->call('POST', '/user', array(
+        $response = $this->call('POST', '/api/user', array(
             'action' => $this->readAction,
         ));
 
@@ -588,7 +588,7 @@ class UserControllerTest extends TestCase
 
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -611,7 +611,7 @@ class UserControllerTest extends TestCase
 
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 2,
             'name' => "updatedName",
@@ -635,7 +635,7 @@ class UserControllerTest extends TestCase
          *  Send update, but changes nothing : OK
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -651,7 +651,7 @@ class UserControllerTest extends TestCase
             'email' => $this->testEmail,
         ]);
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName . "2",
             'username' => $this->testUsername . "2",
@@ -669,7 +669,7 @@ class UserControllerTest extends TestCase
 
         // At this point, 2 user created with different name, lets crash them together
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -695,7 +695,7 @@ class UserControllerTest extends TestCase
 
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -721,7 +721,7 @@ class UserControllerTest extends TestCase
 
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "",
@@ -750,7 +750,7 @@ class UserControllerTest extends TestCase
 
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "updatedName",
@@ -791,7 +791,7 @@ class UserControllerTest extends TestCase
          *   Creating user without name is not allowed
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'username' => $this->testUsername,
@@ -812,7 +812,7 @@ class UserControllerTest extends TestCase
         *   Creating user empty name is not allowed
         */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => "",
@@ -836,7 +836,7 @@ class UserControllerTest extends TestCase
          *   Creating user without username is not allowed
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -855,7 +855,7 @@ class UserControllerTest extends TestCase
     public function testUpdateEmptyUsername()
     {
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -876,7 +876,7 @@ class UserControllerTest extends TestCase
     public function testUpdateWithoutEmail()
     {
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -895,7 +895,7 @@ class UserControllerTest extends TestCase
     public function testUpdateEmptyEmail()
     {
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -918,7 +918,7 @@ class UserControllerTest extends TestCase
     public function testUpdateWithoutPassword()
     {
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -937,7 +937,7 @@ class UserControllerTest extends TestCase
     public function testUpdateEmptyPassword()
     {
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -961,7 +961,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -989,7 +989,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1024,7 +1024,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1057,7 +1057,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1098,7 +1098,7 @@ class UserControllerTest extends TestCase
             'id' => 2,
         ]);
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1127,7 +1127,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1162,7 +1162,7 @@ class UserControllerTest extends TestCase
             'id' => 2,
         ]);
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1191,7 +1191,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1222,7 +1222,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1251,7 +1251,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1285,7 +1285,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1319,7 +1319,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1356,7 +1356,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1390,7 +1390,7 @@ class UserControllerTest extends TestCase
             "role_id" => 1,
         ]);
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1424,7 +1424,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1458,7 +1458,7 @@ class UserControllerTest extends TestCase
     {
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1496,7 +1496,7 @@ class UserControllerTest extends TestCase
          * Duplicate entry should be rejected
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -1512,7 +1512,7 @@ class UserControllerTest extends TestCase
             'email' => $this->testEmail,
         ]);
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName . "2",
             'username' => $this->testUsername . "2",
@@ -1530,7 +1530,7 @@ class UserControllerTest extends TestCase
 
         // At this point, 2 user created with different name, lets crash them together
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName . "2",
@@ -1554,7 +1554,7 @@ class UserControllerTest extends TestCase
          *  Its ok :)
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -1570,7 +1570,7 @@ class UserControllerTest extends TestCase
             'email' => $this->testEmail,
         ]);
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName . "2",
             'username' => $this->testUsername . "2",
@@ -1588,7 +1588,7 @@ class UserControllerTest extends TestCase
 
         // At this point, 2 user created with different name, lets crash them together
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName . "2",
@@ -1612,7 +1612,7 @@ class UserControllerTest extends TestCase
          *  Its not ok
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -1628,7 +1628,7 @@ class UserControllerTest extends TestCase
             'email' => $this->testEmail,
         ]);
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName . "2",
             'username' => $this->testUsername . "2",
@@ -1646,7 +1646,7 @@ class UserControllerTest extends TestCase
 
         // At this point, 2 user created with different username, lets crash them together
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1670,7 +1670,7 @@ class UserControllerTest extends TestCase
          *  Its not ok
          */
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName,
             'username' => $this->testUsername,
@@ -1686,7 +1686,7 @@ class UserControllerTest extends TestCase
             'email' => $this->testEmail,
         ]);
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->createAction,
             'name' => $this->testName . "2",
             'username' => $this->testUsername . "2",
@@ -1704,7 +1704,7 @@ class UserControllerTest extends TestCase
 
         // At this point, 2 user created with different name, lets crash them together
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
             'name' => $this->testName,
@@ -1736,7 +1736,7 @@ class UserControllerTest extends TestCase
             'id' => 1,
         ]);
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->deleteAction,
             'id' => 1,
         ));
@@ -1756,7 +1756,7 @@ class UserControllerTest extends TestCase
 
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->deleteAction,
             'id' => 2,
         ));
@@ -1776,7 +1776,7 @@ class UserControllerTest extends TestCase
 
         $this->createDummyUser();
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->deleteAction,
         ));
 
@@ -1799,7 +1799,7 @@ class UserControllerTest extends TestCase
         $this->createDummyUser("1");
         $this->createDummyUser("2");
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->deleteAction,
             'id' => 1,
         ));
@@ -1836,7 +1836,7 @@ class UserControllerTest extends TestCase
         $this->createDummyUser("1");
         $this->createDummyUser("2");
 
-        $this->call('POST', '/user', array(
+        $this->call('POST', '/api/user', array(
             'action' => $this->deleteAction,
             'id' => 1,
         ));
@@ -1873,7 +1873,7 @@ class UserControllerTest extends TestCase
         $this->createDummyUser();
 
         // Delete the role
-        $this->call('POST', '/role', array(
+        $this->call('POST', '/api/role', array(
             'action' => $this->deleteAction,
             'id' => 1,
         ));
@@ -1895,7 +1895,7 @@ class UserControllerTest extends TestCase
         $this->createDummyUser();
 
         // Delete the group
-        $this->call('POST', '/group', array(
+        $this->call('POST', '/api/group', array(
             'action' => $this->deleteAction,
             'id' => 1,
         ));
@@ -1931,7 +1931,7 @@ class UserControllerTest extends TestCase
             'id' => 4,
         ]);
 
-        $response = $this->call('POST', '/user', array(
+        $response = $this->call('POST', '/api/user', array(
             'action' => "fetchAll",
         ));
 

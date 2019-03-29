@@ -3,19 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Group;
-use App\Http\Controllers\Controller;
 use App\Role;
 use App\User;
-use Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
-use Validator;
 
 class UserController extends Controller
 {
-    
+
     public function login(Request $request)
     {
         $status = 401;
@@ -31,7 +29,7 @@ class UserController extends Controller
 
         return response()->json($response, $status);
     }
-    
+
     public function userDashboard()
     {
         return "this is User management page";
