@@ -92,7 +92,6 @@
                 if (this.isLoggedIn) {
                     let user = JSON.parse(localStorage.getItem('inovmonev.user'))
                     this.name = user.name
-                    console.log(name)
                 }
             },
             change() {
