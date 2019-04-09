@@ -38,6 +38,12 @@
                 <li><router-link to="/permissions">
                     <i class="fa fa-link"></i>
                     <span>Permission</span></router-link></li>
+                <li>
+                    <router-link to="/roles">
+                        <i class="fa fa-link"></i>
+                        <span>Roles</span>
+                    </router-link>
+                </li>
             </ul>
         <!-- /.sidebar-menu -->
         </div>
