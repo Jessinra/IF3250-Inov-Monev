@@ -31,7 +31,21 @@
                                     <th class="col-sm-1">{{ role.id }}</th>
                                     <th class="col-sm-2">{{ role.name }}</th>
                                     <th class="col-sm-3">{{ role.description }}</th>
-                                    <th class="col-sm-4">Placeholder Checklist</th>
+                                    <th class="col-sm-4">
+                                        <div>
+                                            <tr>
+                                                <th class="col-sm-2">
+                                                    <input type="checkbox" v-model="boolean">Testing1
+                                                </th>
+                                                <th class="col-sm-2">
+                                                    <input type="checkbox" v-model="boolean">Testing2
+                                                </th>
+                                                <th class="col-sm-2">
+                                                    <input type="checkbox" v-model="boolean">Testing3
+                                                </th>
+                                            <tr>
+                                        </div>
+                                    </th>
                                 </tr>
                             </tbody>
                         </table>
@@ -87,6 +101,7 @@ import axios from 'axios';
 export default {
     data() {
         return {
+            permissions = [],
             roles: [],
             role: {
                 id: '',
