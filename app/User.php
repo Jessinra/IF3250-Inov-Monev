@@ -2,9 +2,9 @@
 
 namespace App;
 
-use Laravel\Passport\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
@@ -49,6 +49,17 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Group', "user_group")->withPivot('id')->withTimestamps();
     }
 
+    public function projects()
+    {
+        return $this->hasMany('App\Project', "user_project")->withPivot('id')->withTimestamps();
+    }
+
+    public function notes()
+    {
+        return $this->hasMany('App\Note', "user_note")->withPivot('id')->withTimestamps();
+    }
+
+
     public function addRole($roleId)
     {
         $this->roles()->attach($roleId);
@@ -68,5 +79,6 @@ class User extends Authenticatable
     {
         $this->groups()->detach($groupId);
     }
+
 
 }

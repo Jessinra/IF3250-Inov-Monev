@@ -15,4 +15,9 @@ class Group extends Model
     {
         return $this->belongsToMany('App\User', "user_group")->withPivot('id')->withTimestamps();
     }
+
+    public function projects()
+    {
+        return $this->hasMany('App\Project', "group_project")->withPivot('id')->withTimestamps();
+    }
 }
