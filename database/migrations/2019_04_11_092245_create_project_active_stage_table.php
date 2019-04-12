@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProjectStageTable extends Migration
+class CreateProjectActiveStageTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateProjectStageTable extends Migration
      */
     public function up()
     {
-        Schema::create('project_stage', function (Blueprint $table) {
+        Schema::create('project_active_stage', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('project_id');
             $table->unsignedInteger('stage_id');
@@ -32,6 +32,6 @@ class CreateProjectStageTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('project_stage');
+        Schema::dropIfExists('project_active_stage');
     }
 }

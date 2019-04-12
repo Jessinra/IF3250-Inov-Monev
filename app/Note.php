@@ -1,22 +1,28 @@
 <?php
 
-namespace App;
+    namespace App;
 
-use Illuminate\Database\Eloquent\Model;
+    use Illuminate\Database\Eloquent\Model;
 
-class Note extends Model
-{
-    protected $fillable = [
-        'note'
-    ];
-
-    public function user()
+    class Note extends Model
     {
-        return $this->belongsTo('App\User', "user_note")->withPivot('id')->withTimestamps();
-    }
+        protected $fillable = [
+            'note'
+        ];
 
-    public function project()
-    {
-        return $this->belongsTo('App\Project', "project_note")->withPivot('id')->withTimestamps();
+        public function user() {
+            return $this->belongsTo('App\User', "user_note")->withPivot('id')->withTimestamps();
+        }
+
+        public function project() {
+            return $this->belongsTo('App\Project', "project_note")->withPivot('id')->withTimestamps();
+        }
+
+        public function setUser($userId) {
+            $this->user()->associate($userId);
+        }
+
+        public function setProject($projectId) {
+            $this->project()->associate($projectId);
+        }
     }
-}
