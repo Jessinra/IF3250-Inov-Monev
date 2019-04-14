@@ -13,15 +13,23 @@ abstract class TestCase extends BaseTestCase
 
     private $testPermissionName = "test permission";
     private $testPermissionDesc = 'permission for test only';
+
     private $testGroupName = "test group";
     private $testGroupDesc = 'group for test only';
+
     private $testRoleName = "test role";
     private $testRoleDesc = 'role for test only';
     private $testPermissionCount = 2;
+
     private $testName = "test user";
     private $testUsername = 'test username';
     private $testEmail = "testemail@email.com";
     private $testPassword = "test pass";
+
+    private $testStageName = "test stage";
+    private $testStageDesc = 'stage for test only';
+    private $testStageEditable = "true";
+    private $testStageDeletable = "false";
 
     protected function createDummyPermission($copy = "")
     {
@@ -73,6 +81,17 @@ abstract class TestCase extends BaseTestCase
             'password_confirmation' => $this->testPassword,
             'roleId' => 1,
             'groupId' => 1,
+        ));
+    }
+
+    protected function createDummyStage($copy = "")
+    {
+        $this->call('POST', '/api/stage', array(
+            'action' => $this->createAction,
+            'name' => $this->testStageName . $copy,
+            'description' => $this->testStageDesc . $copy,
+            'editable' => $this->testStageEditable,
+            'deletable' => $this->testStageDeletable,
         ));
     }
 }
