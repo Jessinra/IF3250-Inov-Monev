@@ -7,7 +7,10 @@
     class Stage extends Model
     {
         protected $fillable = [
-            'name', 'description', 'editable', 'deletable',
+            'name' => "Project Stage",
+            'description' => "No description given",
+            'editable' => false,
+            'deletable' => false,
         ];
 
         public function nextStages() {
