@@ -19,6 +19,9 @@ class CreateProjectsTable extends Migration
             $table->text('description');
             $table->string('file');
             $table->timestamps();
+
+            $table->unsignedInteger('stage_id');
+            $table->foreign('stage_id')->references('id')->on('stages')->onDelete('no action');
         });
     }
 

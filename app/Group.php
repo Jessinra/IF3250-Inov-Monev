@@ -16,7 +16,7 @@
         }
 
         public function projects() {
-            return $this->hasMany('App\Project', "group_project")->withPivot('id')->withTimestamps();
+            return $this->belongsToMany('App\Project', "group_project")->withPivot('id')->withTimestamps();
         }
 
         public function addUser($userId){

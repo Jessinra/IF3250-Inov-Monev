@@ -48,7 +48,7 @@
         }
 
         public function projects() {
-            return $this->hasMany('App\Project', "user_project")->withPivot('id')->withTimestamps();
+            return $this->belongsToMany('App\Project', "user_project")->withPivot('id')->withTimestamps();
         }
 
         public function notes() {
