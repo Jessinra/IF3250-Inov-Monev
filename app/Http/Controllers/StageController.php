@@ -60,19 +60,18 @@ class StageController extends Controller
         return [
             'name' => isset($data['name']) ? $data['name'] : null,
             'description' => isset($data['description']) ? $data['description'] : null,
-            'editable' => (isset($data['editable']) ? $data['editable'] : 'null') === 'true',
-            'deletable' => (isset($data['deletable']) ? $data['deletable'] : 'null') === 'true',
+            'editable' => isset($data['editable']) ? $data['editable'] : "false",
+            'deletable' => isset($data['deletable']) ? $data['deletable'] : "false",
         ];
     }
 
     private function isCreateDataValid($data)
     {
-
         $validator = Validator::make($data, [
             'name' => ['required', 'string', 'max:255', 'unique:stages'],
             'description' => ['string', 'max:255'],
-            'editable' => ['boolean'],
-            'deletable' => ['boolean'],
+            'editable' => ['required', 'string', "regex:(true|false)"],
+            'deletable' => ['required', 'string', "regex:(true|false)"],
         ]);
 
         return !($validator->fails());
@@ -130,8 +129,8 @@ class StageController extends Controller
             'id' => isset($data['id']) ? $data['id'] : null,
             'name' => isset($data['name']) ? $data['name'] : null,
             'description' => isset($data['description']) ? $data['description'] : null,
-            'editable' => (isset($data['editable']) ? $data['editable'] : 'null') === 'true',
-            'deletable' => (isset($data['deletable']) ? $data['deletable'] : 'null') === 'true',
+            'editable' => isset($data['editable']) ? $data['editable'] : "false",
+            'deletable' => isset($data['deletable']) ? $data['deletable'] : "false",
         ];
     }
 
@@ -142,8 +141,8 @@ class StageController extends Controller
             'id' => ['required', 'string'],
             'name' => ['required', 'string', 'max:255', 'unique:stages'],
             'description' => ['string', 'max:255'],
-            'editable' => ['boolean'],
-            'deletable' => ['boolean'],
+            'editable' => ['required', 'string', "regex:(true|false)"],
+            'deletable' => ['required', 'string', "regex:(true|false)"],
         ]);
 
         return !($validator->fails());
@@ -163,12 +162,15 @@ class StageController extends Controller
     private function updateStage($data)
     {
         $data = $this->parseUpdateData($data);
-
         if (!($this->isUpdateDataValid($data))) {
             return null;
         }
 
         $stage = Stage::find($data['id']);
+        if (!$stage) {
+            return null;
+        }
+
         $stage['name'] = $data['name'];
         $stage['description'] = $data['description'];
         $stage['editable'] = $data['editable'];
@@ -200,12 +202,18 @@ class StageController extends Controller
             isset($data['id']) ? $data['id'] : null
         );
 
-        if ($stage->activeProjects()) {
-            $this->displayDeleteStageFailed("Remove project(s) in this stage first");
+        if (!$stage) {
+            return;
         }
 
-        if ($stage->prevStages()) {
+        if (!empty($stage->activeProjects->items)) {
+            $this->displayDeleteStageFailed("Remove project(s) in this stage first");
+            return;
+        }
+
+        if (!empty($stage->prevStages->items)) {
             $this->displayDeleteStageFailed("Remove stage(s) referencing this stage first");
+            return;
         }
 
         $stage->delete();
