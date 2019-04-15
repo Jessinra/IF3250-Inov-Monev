@@ -21,3 +21,4 @@ Route::post('/group', 'GroupController@groupManagementHandler');
 Route::post('/user', 'UserController@userManagementHandler');
 
 Route::post('/stage', 'StageController@stageManagementHandler');
+Route::post('/workflow', 'WorkflowController@workflowManagementHandler');

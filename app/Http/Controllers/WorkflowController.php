@@ -55,8 +55,11 @@ class WorkflowController extends Controller
         $workflow = [];
 
         foreach ($stages as $stage) {
-            $next = $stage->nextStages();
-            $prev = $stage->prevStages();
+            $next = $stage->nextStages;
+            $prev = $stage->prevStages;
+
+//            print_r($next);
+//            print_r($prev);
 
             $connection['this'] = $stage;
             $connection['next'] = $next;
@@ -72,13 +75,16 @@ class WorkflowController extends Controller
     private function connectStage($data)
     {
         $data = $this->parseUpdateData($data);
-
         if (!($this->isUpdateDataValid($data))) {
             return null;
         }
 
         $currStage = Stage::find($data['id']);
         $nextStage = Stage::find($data['next_id']);
+
+        if (!($currStage) || !($nextStage)) {
+            return null;
+        }
 
         $currStage->addNext($nextStage->id);
         $nextStage->addPrev($currStage->id);
@@ -112,6 +118,10 @@ class WorkflowController extends Controller
 
         $currStage = Stage::find($data['id']);
         $nextStage = Stage::find($data['next_id']);
+
+        if (!($currStage) || !($nextStage)) {
+            return null;
+        }
 
         $currStage->removeNext($nextStage->id);
         $nextStage->removePrev($currStage->id);

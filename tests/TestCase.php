@@ -10,6 +10,7 @@ abstract class TestCase extends BaseTestCase
 
 
     private $createAction = "create";
+    private $connectAction = "connect_stage";
 
     private $testPermissionName = "test permission";
     private $testPermissionDesc = 'permission for test only';
@@ -93,5 +94,40 @@ abstract class TestCase extends BaseTestCase
             'editable' => $this->testStageEditable,
             'deletable' => $this->testStageDeletable,
         ));
+    }
+
+    protected function createDummyWorkflow()
+    {
+        $this->createDummyStage(1);
+        $this->createDummyStage(2);
+        $this->createDummyStage(3);
+        $this->createDummyStage(4);
+
+
+        $this->call('POST', '/api/workflow', array(
+            'action' => $this->connectAction,
+            'id' => "1",
+            'next_id' => "2",
+        ));
+
+        $this->call('POST', '/api/workflow', array(
+            'action' => $this->connectAction,
+            'id' => "1",
+            'next_id' => "1",
+        ));
+
+        $this->call('POST', '/api/workflow', array(
+            'action' => $this->connectAction,
+            'id' => "2",
+            'next_id' => "3",
+        ));
+
+        $this->call('POST', '/api/workflow', array(
+            'action' => $this->connectAction,
+            'id' => "2",
+            'next_id' => "4",
+        ));
+
+
     }
 }
