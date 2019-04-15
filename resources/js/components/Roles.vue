@@ -25,14 +25,14 @@
                                     <th class="col-sm-1 text-center">ID</th>
                                     <th class="col-sm-2 text-center">Name</th>
                                     <th class="col-sm-3 text-center">Description</th>
-                                    <th class="col-sm-4 text-center">Permissions Granted</th>
+                                    <th class="col-sm-2 text-center">Permissions Granted</th>
                                     <th class="col-sm-4 text-center">Action</th>
                                 </tr>
                                 <tr v-for="role in roles" v-bind:key="role.id">
                                     <th class="col-sm-1 text-center">{{ role.id }}</th>
                                     <th class="col-sm-2 text-center">{{ role.name }}</th>
                                     <th class="col-sm-3 text-center">{{ role.description }}</th>
-                                    <th class="col-sm-4 text-center">
+                                    <th class="col-sm-2 text-center">
                                         <button class="btn btn-primary" @click="setCurrentRole(role)" data-toggle="modal" data-target="#modal-roles-show-permissions">Edit Permissions</button>
                                     </th>
                                     <th class="col-sm-4 text-center">
@@ -46,8 +46,7 @@
                 </div>
 
                 <div class="text-right">
-                    <button class="btn btn-primary" data-toggle="modal"
-                    data-target="#modal-create-and-edit">Create New Role</button>
+                    <button class="btn btn-primary" data-toggle="modal" data-target="#modal-create-and-edit">Create New Role</button>
                 </div>
                     
                 <div class="text-right">
@@ -70,8 +69,8 @@
             <div class="modal-wrapper">
                 <div class="modal-dialog box box-default">
                     <div class="box-header with-border">
-                        <slot name="header">Create new role</slot>
-                        <slot name="header">Edit existing role</slot>
+                        <slot v-if="edit_mode" name="header">Edit existing role</slot>
+                        <slot v-else name="header">Create new role</slot>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span></button>
                     </div>
@@ -93,8 +92,8 @@
                     </form>    
                     <div class="modal-footer text-right">
                         <slot name="footer">
-                            <button type="submit" class="btn btn-primary" @click="createNewRole" data-dismiss="modal">Create</button>
-                            <button type="submit" class="btn btn-primary" @click="editExistingRole" data-dismiss="modal">Edit</button>
+                            <button v-if="edit_mode" type="submit" class="btn btn-primary" @click="editExistingRole" data-dismiss="modal">Edit</button>
+                            <button v-else type="submit" class="btn btn-primary" @click="createNewRole" data-dismiss="modal">Create</button>
                         </slot>
                     </div>
                 </div>
@@ -146,6 +145,7 @@ export default {
                 description: '',
             },
             roles_with_permissions: [],
+            edit_mode: false,
             current_selected_role: '',
             pagination: {}
         }
@@ -217,12 +217,13 @@ export default {
                 url
             }
 
+            this.new_role.name = "";
+            this.new_role.description = "";
+
             axios(options)
                 .then(res => {
                     console.log(res);
                     this.fetchAllRoles();
-                    this.new_role.name = "";
-                    this.new_role.description = "";
                 })
         },
         deleteRole: function(id) {
@@ -244,9 +245,6 @@ export default {
                 })
         },
         editExistingRole: function() {
-            console.log(this.current_selected_role);
-            console.log(this.current_selected_role.name);
-            console.log(this.current_selected_role.description);
             let url = 'http://localhost:8000/api/role';
             let data = {
                 action: 'update',
@@ -260,6 +258,10 @@ export default {
                 url
             }
 
+            this.edit_mode = false;
+            this.new_role.name = "";
+            this.new_role.description = "";
+
             axios(options)
                 .then(res => {
                     console.log(res);
@@ -268,8 +270,7 @@ export default {
         },
         setCurrentRole: function(role) {
             this.current_selected_role = role;
-
-            console.log(this.current_selected_role);
+            this.edit_mode = true;
         },
         updateRolesPermission: function() {
             console.log("Update permission pressed");
