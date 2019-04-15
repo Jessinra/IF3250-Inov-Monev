@@ -22,29 +22,22 @@
                         <table class="table table-hover">
                             <tbody>
                                 <tr>
-                                    <th class="col-sm-1">ID</th>
-                                    <th class="col-sm-2">Name</th>
-                                    <th class="col-sm-3">Description</th>
-                                    <th class="col-sm-4">Permissions Granted</th>
+                                    <th class="col-sm-1 text-center">ID</th>
+                                    <th class="col-sm-2 text-center">Name</th>
+                                    <th class="col-sm-3 text-center">Description</th>
+                                    <th class="col-sm-4 text-center">Permissions Granted</th>
+                                    <th class="col-sm-4 text-center">Action</th>
                                 </tr>
                                 <tr v-for="role in roles" v-bind:key="role.id">
-                                    <th class="col-sm-1">{{ role.id }}</th>
-                                    <th class="col-sm-2">{{ role.name }}</th>
-                                    <th class="col-sm-3">{{ role.description }}</th>
-                                    <th class="col-sm-4">
-                                        <div>
-                                            <tr>
-                                                <th class="col-sm-2">
-                                                    <input type="checkbox" v-model="boolean">Testing1
-                                                </th>
-                                                <th class="col-sm-2">
-                                                    <input type="checkbox" v-model="boolean">Testing2
-                                                </th>
-                                                <th class="col-sm-2">
-                                                    <input type="checkbox" v-model="boolean">Testing3
-                                                </th>
-                                            <tr>
-                                        </div>
+                                    <th class="col-sm-1 text-center">{{ role.id }}</th>
+                                    <th class="col-sm-2 text-center">{{ role.name }}</th>
+                                    <th class="col-sm-3 text-center">{{ role.description }}</th>
+                                    <th class="col-sm-4 text-center">
+                                        <button class="btn btn-primary" @click="setCurrentRole(role)" data-toggle="modal" data-target="#modal-roles-show-permissions">Edit Permissions</button>
+                                    </th>
+                                    <th class="col-sm-4 text-center">
+                                        <button class="btn btn-primary" @click="setCurrentRole(role)" data-toggle="modal" data-target="#modal-create-and-edit">Edit This Role</button>
+                                        <button class="btn btn-danger" @click="deleteRole(role.id)">Delete This Role</button>
                                     </th>
                                 </tr>
                             </tbody>
@@ -54,7 +47,7 @@
 
                 <div class="text-right">
                     <button class="btn btn-primary" data-toggle="modal"
-                    data-target="#modal-create">Create</button>
+                    data-target="#modal-create-and-edit">Create New Role</button>
                 </div>
                     
                 <div class="text-right">
@@ -73,24 +66,68 @@
             </div>
         </div> <!-- /.content -->
 
-        <!-- create new modal -->
-        <div class="modal" id="modal-create" transition="modal">
+        <div class="modal" id="modal-create-and-edit" transition="modal">
             <div class="modal-wrapper">
                 <div class="modal-dialog box box-default">
                     <div class="box-header with-border">
-                        <slot name="header">Create new permission</slot>
+                        <slot name="header">Create new role</slot>
+                        <slot name="header">Edit existing role</slot>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span></button>
                     </div>
-                
-      
+                    <form @submit.prevent="createNewRole" role="form">
+                        <div class="box-body">
+                            <div class="form-group">
+                                <label>Name
+                                    <input type="text" class="form-control"
+                                    placeholder="New name" v-model="new_role.name">
+                                </label>
+                            </div>
+                            <div class="form-group">
+                                <label>Description
+                                    <input type="text" class="form-control"
+                                    placeholder="New description" v-model="new_role.description">
+                                </label>
+                            </div>
+                        </div>
+                    </form>    
+                    <div class="modal-footer text-right">
+                        <slot name="footer">
+                            <button type="submit" class="btn btn-primary" @click="createNewRole" data-dismiss="modal">Create</button>
+                            <button type="submit" class="btn btn-primary" @click="editExistingRole" data-dismiss="modal">Edit</button>
+                        </slot>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- create new modal -->
+        <div class="modal" id="modal-roles-show-permissions" transition="modal">
+            <div class="modal-wrapper">
+                <div class="modal-dialog box box-default">
+                    <div class="box-header with-border">
+                        <slot name="header">List of Permissions</slot>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span></button>
+                    </div>
+                    <div class="modal-body">
+                        <div v-for="permission in permissions" v-bind:key="permission.id">
+                            <input type="checkbox" v-model="roles_with_permissions" :value="permission.name"/> {{ permission.name }}
+                        </div>
+                    </div>
+                    <div class="modal-footer text-right">
+                        <slot name="footer">
+                            <button type="submit" class="btn btn-warning"
+                            @click="updateRolesPermission" data-dismiss="modal">Update</button>
+                        </slot>
+                    </div>
                 </div>
             </div>
         </div>
         <!-- / create new modal -->
 
         <!-- update modal -->
- 
+
         <!-- / update modal -->
     </div> <!-- /.content-wrapper -->
 </template>
@@ -101,14 +138,15 @@ import axios from 'axios';
 export default {
     data() {
         return {
-            permissions = [],
+            permissions: [],
             roles: [],
-            role: {
+            new_role: {
                 id: '',
                 name: '',
-                description: ''
+                description: '',
             },
-            permission_id: '',
+            roles_with_permissions: [],
+            current_selected_role: '',
             pagination: {}
         }
     },
@@ -127,9 +165,25 @@ export default {
 
             axios(options)
                 .then(res => {
-                    console.log(res);
                     this.roles = res.data;
-                    console.log(this.roles)
+                    console.log(this.roles);
+                });         
+        },
+        fetchPermissionsOfRole: function(page_url) {
+            let url = page_url || 'http://localhost:8000/api/permissions';
+            let data = {
+                action: 'fetchAll'
+            };
+            let vm = this;
+            let options = {
+                method: 'post',
+                data,
+                url
+            }
+
+            axios(options)
+                .then(res => {
+                    this.roles = res.data;
                 });         
         },
         fetchAllPermissions: function(page_url) {
@@ -146,10 +200,79 @@ export default {
 
             axios(options)
                 .then(res => {
-                    console.log(res);
                     this.permissions = res.data.data;
                     vm.makePagination(res.data.meta, res.data.links);
                 });
+        },
+        createNewRole: function() {
+            let url = 'http://localhost:8000/api/role';
+            let data = {
+                action: 'create',
+                name: this.new_role.name,
+                description: this.new_role.description
+            }
+            let options = {
+                method: 'post',
+                data,
+                url
+            }
+
+            axios(options)
+                .then(res => {
+                    console.log(res);
+                    this.fetchAllRoles();
+                    this.new_role.name = "";
+                    this.new_role.description = "";
+                })
+        },
+        deleteRole: function(id) {
+            let url = 'http://localhost:8000/api/role';
+            let data = {
+                action: 'delete',
+                id: id
+            }
+            let options = {
+                method: 'post',
+                data,
+                url
+            }
+
+            axios(options)
+                .then(res => {
+                    console.log(res);
+                    this.fetchAllRoles();
+                })
+        },
+        editExistingRole: function() {
+            console.log(this.current_selected_role);
+            console.log(this.current_selected_role.name);
+            console.log(this.current_selected_role.description);
+            let url = 'http://localhost:8000/api/role';
+            let data = {
+                action: 'update',
+                id: this.current_selected_role.id,
+                name: this.current_selected_role.name,
+                description: this.current_selected_role.description
+            }
+            let options = {
+                method: 'post',
+                data,
+                url
+            }
+
+            axios(options)
+                .then(res => {
+                    console.log(res);
+                    this.fetchAllRoles();
+                })
+        },
+        setCurrentRole: function(role) {
+            this.current_selected_role = role;
+
+            console.log(this.current_selected_role);
+        },
+        updateRolesPermission: function() {
+            console.log("Update permission pressed");
         },
         makePagination: function(meta, links) {
             let pagination = {
@@ -224,6 +347,7 @@ export default {
     },
     created: function() {
         this.fetchAllRoles();
+        this.fetchAllPermissions();
     }
 }
 </script>
