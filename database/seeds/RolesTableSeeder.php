@@ -19,6 +19,11 @@ class RolesTableSeeder extends Seeder
             $role->name = "This is role $number";
             $role->description = "This is description of role $number";
             $role->save();
+            if ($i < 5) {
+                $role->addPermissions(1);
+            } else {
+                $role->addPermissions(10);
+            }
         }
     }
 }
