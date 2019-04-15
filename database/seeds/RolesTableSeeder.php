@@ -12,9 +12,13 @@ class RolesTableSeeder extends Seeder
      */
     public function run()
     {
-        $role = new Role;
-        $role->name = "Role1";
-        $role->description = "Test";
-        $role->save();
+        $number_of_seeds = 10;
+        for ($i = 0; $i < $number_of_seeds; $i++) {
+            $role = new Role;
+            $number = $i+1;
+            $role->name = "This is role $number";
+            $role->description = "This is description of role $number";
+            $role->save();
+        }
     }
 }
