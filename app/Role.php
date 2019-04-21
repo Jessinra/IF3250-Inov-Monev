@@ -24,7 +24,7 @@ class Role extends Model
     /* Eloquent many to many function */
     public function permissions()
     {
-        return $this->belongsToMany('App\Permission', 'role_permission')->withPivot('id')->withTimestamps();
+        return $this->belongsToMany('App\Permission', 'role_permission')->withPivot('role_id', 'permission_id')->withTimestamps();
     }
 
     public function addPermissions($permissionIds)
