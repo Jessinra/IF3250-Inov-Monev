@@ -31,7 +31,7 @@ class ProjectController extends Controller
   }
 
   private function parseCreateData($data) {
-    $uploadedFile = $data->file('file');
+    $uploadedFile = $data['file'];
     $path = $uploadedFile->store('public/files');
 
     return [

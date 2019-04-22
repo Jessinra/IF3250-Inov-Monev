@@ -156,18 +156,19 @@ export default {
         },
         createNewProject: function() {
             let url = 'http://localhost:8000/api/projects';
-            let data = {
-                action: 'create',
-                name: this.project.name,
-                description: this.project.description,
-                file: this.project.file
-            }
+            let formData = new FormData();
+
+            formData.append('action', 'create');
+            formData.append('name', this.project.name);
+            formData.append('description', this.project.description);
+            formData.append('file', this.project.file);
+            
             let options = {
                 header: {
                     'Content-Type': 'multipart/form-data'
                 },
                 method: 'post',
-                data,
+                data: formData,
                 url
             }
 
