@@ -19,3 +19,4 @@ Route::post('/permissions', 'PermissionController@permissionManagementHandler');
 Route::post('/role', 'RoleController@roleManagementHandler');
 Route::post('/group', 'GroupController@groupManagementHandler');
 Route::post('/user', 'UserController@userManagementHandler');
+Route::post('/projects', 'ProjectController@projectManagementHandler');

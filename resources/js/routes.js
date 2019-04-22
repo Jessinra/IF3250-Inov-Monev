@@ -2,6 +2,7 @@ import Home from './components/ExampleComponent.vue'
 import Login from './components/Login.vue'
 import PermissionsComponent from './components/Permissions.vue'
 import DashboardComponent from './components/Dashboard.vue'
+import ProjectsComponent from './components/Projects.vue'
 
 const routes= [
     {
@@ -26,6 +27,14 @@ const routes= [
         path: '/dashboard',
         name: 'dashboard',
         component: DashboardComponent,
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
+        path: '/projects',
+        name: 'projects',
+        component: ProjectsComponent,
         meta: {
             requiresAuth: true,
         }

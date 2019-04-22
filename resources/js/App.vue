@@ -64,10 +64,8 @@
         watch: {
             $route: function() {
                 if (this.$route.name != 'login') {
-                    console.log('watched true');
                     this.showComponents = true;
                 } else {
-                    console.log('watched false');
                     this.showComponents = false;
                 }
             }

@@ -35,6 +35,9 @@
                 <li class="active"><router-link to="/dashboard">
                     <i class="fa fa-dashboard"></i>
                     <span>Dashboard</span></router-link></li>
+                <li><router-link to="/projects">
+                    <i class="fa fa-link"></i>
+                    <span>Project</span></router-link></li>
                 <li><router-link to="/permissions">
                     <i class="fa fa-link"></i>
                     <span>Permission</span></router-link></li>
