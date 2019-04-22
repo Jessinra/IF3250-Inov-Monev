@@ -13,7 +13,7 @@
 
 use Illuminate\Support\Facades\Route;
 
-Route::post('login', 'UserController@login');
+Route::post('/login', 'UserController@login');
 
 Route::post('/permissions', 'PermissionController@permissionManagementHandler');
 Route::post('/role', 'RoleController@roleManagementHandler');
