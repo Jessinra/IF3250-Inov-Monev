@@ -159,6 +159,7 @@ export default {
                 name: '',
                 description: '',
                 file: '',
+                uploader: ''
             },
             project_id: '',
             pagination: {}
@@ -202,6 +203,7 @@ export default {
             console.log(this.project.file);
         },
         createNewProject: function() {
+            let user = JSON.parse(localStorage.getItem('inovmonev.user'));
             let url = 'http://localhost:8000/api/projects';
             let formData = new FormData();
 
@@ -209,6 +211,7 @@ export default {
             formData.append('name', this.project.name);
             formData.append('description', this.project.description);
             formData.append('file', this.project.file);
+            formData.append('uploader', user.id);
             
             let options = {
                 header: {
@@ -247,6 +250,7 @@ export default {
             this.project.id = id;
         },
         updateProject: function(id) {
+            let user = JSON.parse(localStorage.getItem('inovmonev.user'));
             let url = 'http://localhost:8000/api/projects';
             let formData = new FormData();
 
@@ -255,6 +259,7 @@ export default {
             formData.append('name', this.project.name);
             formData.append('description', this.project.description);
             formData.append('file', this.project.file);
+            formData.append('uploader', user.id);
 
             let options = {
                 header: {

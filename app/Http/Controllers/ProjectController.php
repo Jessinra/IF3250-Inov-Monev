@@ -6,12 +6,14 @@ use App\Project;
 use App\Http\Resources\Project as ProjectResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Auth;
 
 class ProjectController extends Controller
 {
   public function projectManagementHandler(Request $request) {
-    // \Log::info($request->all());
+    \Log::info($request->all());
     $data = $request->all();
+
 
     $action = isset($data['action']) ? $data['action'] : null;
     if ($action == "create") {
@@ -42,7 +44,8 @@ class ProjectController extends Controller
     return [
       'name' => isset($data['name']) ? $data['name'] : null,
       'description' => isset($data['description']) ? $data['description'] : null,
-      'file' => $path
+      'file' => $path,
+      'uploader' => $data['uploader']
     ];
   }
 
@@ -50,10 +53,13 @@ class ProjectController extends Controller
     if (!($this->isCreateRequestValid($data))) {
       return null;
     }
+    \Log::info($data);
 
     $data = $this->parseCreateData($data);
 
     $newProject = Project::create($data);
+    $newProject->setUser($data['uploader']);
+    $newProject->save();
 
     return $newProject;
   }
