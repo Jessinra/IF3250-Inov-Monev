@@ -10,8 +10,8 @@
             'name', 'description', 'file'
         ];
 
-        public function user() {
-            return $this->belongsTo('App\User', "user_project")->withPivot('id')->withTimestamps();
+        public function users() {
+            return $this->belongsToMany('App\User', "user_project")->withPivot('id')->withTimestamps();
         }
 
         public function group() {
@@ -30,8 +30,12 @@
             return $this->hasMany('App\Note', "project_note")->withPivot('id')->withTimestamps();
         }
 
-        public function setUser($userId) {
-            $this->user()->associate($userId);
+        public function addUser($userIds) {
+            $this->users()->attach($userIds);
+        }
+
+        public function removeUser($userIds) {
+            $this->users()->detach($userIds);
         }
 
         public function setGroup($groupId) {

@@ -57,8 +57,10 @@ class ProjectController extends Controller
     $data = $this->parseCreateData($data);
 
     $newProject = Project::create($data);
-    // $newProject->setUser($data['uploader']);
-    // $newProject->save();
+    $users = [$data['uploader']];
+
+    $newProject->addUser($data['uploader']);
+    $newProject->save();
 
     return $newProject;
   }
