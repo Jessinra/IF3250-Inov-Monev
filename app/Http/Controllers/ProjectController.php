@@ -59,7 +59,7 @@ class ProjectController extends Controller
     $newProject = Project::create($data);
     $users = [$data['uploader']];
 
-    $newProject->addUser($data['uploader']);
+    $newProject->setUser($data['uploader']);
     $newProject->save();
 
     return $newProject;
@@ -109,6 +109,8 @@ class ProjectController extends Controller
     $project['name'] = $data['name'];
     $project['description'] = $data['description'];
     $project['file'] = $data['file'];
+
+    $project->setUser($data['uploader']);
     $project->save();
 
     return $project;
