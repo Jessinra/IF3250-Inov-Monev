@@ -44,6 +44,9 @@
                         <span>Roles</span>
                     </router-link>
                 </li>
+                <li><router-link to="/users">
+                    <i class="fa fa-link"></i>
+                    <span>User</span></router-link></li>
             </ul>
         <!-- /.sidebar-menu -->
         </div>

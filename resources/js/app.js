@@ -15,8 +15,6 @@ const router = new VueRouter({
 
 router.beforeEach((to, from, next) => {
     if (to.matched.some(record => record.meta.requiresAuth)) {
-        console.log("checked");
-        console.log(localStorage.getItem('inovmonev.jwt'));
         if (localStorage.getItem('inovmonev.jwt') == null) {
             next({
                 path: '/login',
