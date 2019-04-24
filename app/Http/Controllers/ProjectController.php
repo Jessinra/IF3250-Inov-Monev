@@ -53,13 +53,12 @@ class ProjectController extends Controller
     if (!($this->isCreateRequestValid($data))) {
       return null;
     }
-    \Log::info($data);
 
     $data = $this->parseCreateData($data);
 
     $newProject = Project::create($data);
-    $newProject->setUser($data['uploader']);
-    $newProject->save();
+    // $newProject->setUser($data['uploader']);
+    // $newProject->save();
 
     return $newProject;
   }
