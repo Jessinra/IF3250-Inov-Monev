@@ -11,7 +11,7 @@
         ];
 
         public function user() {
-            return $this->belongsTo('App\User', "user_project")->withPivot('id')->withTimestamps();
+            return $this->belongsTo('App\User');
         }
 
         public function group() {

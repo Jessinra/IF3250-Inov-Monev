@@ -19,6 +19,8 @@ class CreateProjectsTable extends Migration
             $table->text('description');
             $table->string('file');
             $table->timestamps();
+
+            $table->unsignedInteger('user_id');
         });
     }
 
