@@ -266,9 +266,17 @@ class RoleController extends Controller
 
     private function fetchAllRole()
     {
+        $role_data = Role::all();
+
+        foreach ($role_data as $role) {
+            foreach ($role->permissions as $permission) {
+                // Query permissions for role
+                // DONT DELETE
+            }
+        }
 
         try {
-            return Role::all();
+            return json_encode($role_data);
         } catch (\Exception $e) {
             return [];
         }
