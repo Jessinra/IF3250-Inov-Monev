@@ -15,11 +15,11 @@
         }
 
         public function group() {
-            return $this->belongsTo('App\Group', "group_project")->withPivot('id')->withTimestamps();
+            return $this->belongsToMany('App\Group', "group_project")->withPivot('id')->withTimestamps();
         }
 
         public function activeStage() {
-            return $this->belongsTo('App\Stage', "project_active_stage")->withPivot('id')->withTimestamps();
+            return $this->belongsTo('App\Stage');
         }
 
         public function visitedStages() {
@@ -27,7 +27,7 @@
         }
 
         public function notes() {
-            return $this->hasMany('App\Note', "project_note")->withPivot('id')->withTimestamps();
+            return $this->hasMany('App\Note');
         }
 
         public function setUser($userId) {

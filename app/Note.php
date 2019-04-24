@@ -11,11 +11,11 @@
         ];
 
         public function user() {
-            return $this->belongsTo('App\User', "user_note")->withPivot('id')->withTimestamps();
+            return $this->belongsTo('App\User');
         }
 
         public function project() {
-            return $this->belongsTo('App\Project', "project_note")->withPivot('id')->withTimestamps();
+            return $this->belongsTo('App\Project');
         }
 
         public function setUser($userId) {
