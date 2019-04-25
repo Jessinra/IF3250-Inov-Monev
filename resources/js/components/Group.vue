@@ -225,7 +225,7 @@
                         this.fetchAllGroup();
                     })
             },
-            openUpdate: function (id) {
+            openUpdate: function(id) {
                 this.group.id = id;
             },
             updateGroup: function (id) {
