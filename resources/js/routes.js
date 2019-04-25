@@ -6,6 +6,7 @@ import RolesComponent from './components/Roles.vue'
 import UsersComponent from './components/Users.vue'
 import ProjectsComponent from './components/Projects.vue'
 import NotesComponent from './components/Notes.vue'
+import GroupComponent from './components/Group.vue'
 
 const routes= [
     {
@@ -62,6 +63,14 @@ const routes= [
         path: '/users',
         name: 'users',
         component: UsersComponent,
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
+        path: '/group',
+        name: 'group',
+        component: GroupComponent,
         meta: {
             requiresAuth: true,
         }
