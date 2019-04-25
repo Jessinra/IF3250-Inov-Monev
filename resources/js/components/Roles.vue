@@ -88,10 +88,6 @@
                     </form>    
 
                     <div>
-                        <div> {{ current_selected_role.name }} </div> 
-
-                        <div> {{ current_selected_role }} </div>
-
                         <div v-for="permission in permissions" v-bind:key="current_selected_role.id">
                             <input type="checkbox" v-model="current_selected_role.permissions" :value="permission"/> {{ permission.name }}
                         </div>
