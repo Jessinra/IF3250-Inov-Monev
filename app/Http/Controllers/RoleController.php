@@ -23,9 +23,12 @@ class RoleController extends Controller
 //        $this->redirectIfNotLoggedIn($auth);
 
         $data = $request->all();
-        $data = array_map('trim', $data);
-
         $action = isset($data['action']) ? $data['action'] : null;
+
+        if ($action != "update" && $action != "create") {
+            $data = array_map('trim', $data);
+        }
+
         if ($action == "create") {
             $this->createNewRoleHandler($data);
 
@@ -190,9 +193,25 @@ class RoleController extends Controller
 
     private function updateRoleHandler($data)
     {
+        $id = $data['id'];
+        $updatedRole = Role::find($id);
 
-        $updatedRole = $this->updateRole($data);
-        $updatedRole = $this->addPermissionsToRole($updatedRole, $data);
+        if (!$updatedRole) {
+            return Role::create($data);
+        } else {
+            foreach($data['permissions'] as $permission) {
+                $role_id = $id;
+                $permission_id = $permission['id'];
+                $updatedRole->addPermissions($permission_id);
+                // $updatedRole->permissions()->updateExistingPivot($role_id, array('role_id' => $role_id, 'permission_id' => $permission_id));
+            }
+            $updatedRole->update($data);
+        }
+
+        return $updatedRole;
+
+        // $updatedRole = $this->updateRole($data);
+        // $updatedRole = $this->addPermissionsToRole($updatedRole, $data);
 
         if (!$updatedRole) {
             $this->displayUpdateRoleFailed();
