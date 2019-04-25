@@ -20,5 +20,6 @@ Route::post('/role', 'RoleController@roleManagementHandler');
 Route::post('/group', 'GroupController@groupManagementHandler');
 Route::post('/user', 'UserController@userManagementHandler');
 Route::post('/projects', 'ProjectController@projectManagementHandler');
+Route::post('/notes', 'NoteController@projectManagementHandler');
 Route::post('/stage', 'StageController@stageManagementHandler');
 Route::post('/workflow', 'WorkflowController@workflowManagementHandler');
