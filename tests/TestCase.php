@@ -10,18 +10,27 @@ abstract class TestCase extends BaseTestCase
 
 
     private $createAction = "create";
+    private $connectAction = "connect_stage";
 
     private $testPermissionName = "test permission";
     private $testPermissionDesc = 'permission for test only';
+
     private $testGroupName = "test group";
     private $testGroupDesc = 'group for test only';
+
     private $testRoleName = "test role";
     private $testRoleDesc = 'role for test only';
     private $testPermissionCount = 2;
+
     private $testName = "test user";
     private $testUsername = 'test username';
     private $testEmail = "testemail@email.com";
     private $testPassword = "test pass";
+
+    private $testStageName = "test stage";
+    private $testStageDesc = 'stage for test only';
+    private $testStageEditable = "true";
+    private $testStageDeletable = "false";
 
     protected function createDummyPermission($copy = "")
     {
@@ -74,5 +83,51 @@ abstract class TestCase extends BaseTestCase
             'roleId' => 1,
             'groupId' => 1,
         ));
+    }
+
+    protected function createDummyStage($copy = "")
+    {
+        $this->call('POST', '/api/stage', array(
+            'action' => $this->createAction,
+            'name' => $this->testStageName . $copy,
+            'description' => $this->testStageDesc . $copy,
+            'editable' => $this->testStageEditable,
+            'deletable' => $this->testStageDeletable,
+        ));
+    }
+
+    protected function createDummyWorkflow()
+    {
+        $this->createDummyStage(1);
+        $this->createDummyStage(2);
+        $this->createDummyStage(3);
+        $this->createDummyStage(4);
+
+
+        $this->call('POST', '/api/workflow', array(
+            'action' => $this->connectAction,
+            'id' => "1",
+            'next_id' => "2",
+        ));
+
+        $this->call('POST', '/api/workflow', array(
+            'action' => $this->connectAction,
+            'id' => "1",
+            'next_id' => "1",
+        ));
+
+        $this->call('POST', '/api/workflow', array(
+            'action' => $this->connectAction,
+            'id' => "2",
+            'next_id' => "3",
+        ));
+
+        $this->call('POST', '/api/workflow', array(
+            'action' => $this->connectAction,
+            'id' => "2",
+            'next_id' => "4",
+        ));
+
+
     }
 }

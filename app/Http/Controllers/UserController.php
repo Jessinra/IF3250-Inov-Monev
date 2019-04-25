@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Validation\Rule;
+use App\Http\Resources\User as UserResource;
 
 class UserController extends Controller
 {
@@ -365,11 +366,18 @@ class UserController extends Controller
 
     private function fetchAllUser()
     {
+        $users_per_page = 15;
+        
+        // Get permissions
+        $users = User::paginate($users_per_page);
 
-        try {
-            return User::all();
-        } catch (\Exception $e) {
-            return [];
-        }
+        // return as a resource
+        return UserResource::collection($users);
+
+        // try {
+        //     return User::all();
+        // } catch (\Exception $e) {
+        //     return [];
+        // }
     }
 }

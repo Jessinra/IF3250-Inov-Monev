@@ -2,7 +2,10 @@ import Home from './components/ExampleComponent.vue'
 import Login from './components/Login.vue'
 import PermissionsComponent from './components/Permissions.vue'
 import DashboardComponent from './components/Dashboard.vue'
+import RolesComponent from './components/Roles.vue'
+import UsersComponent from './components/Users.vue'
 import ProjectsComponent from './components/Projects.vue'
+import NotesComponent from './components/Notes.vue'
 
 const routes= [
     {
@@ -24,6 +27,14 @@ const routes= [
         }
     },
     {
+        path: '/roles',
+        name: 'roles',
+        component: RolesComponent,
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
         path: '/dashboard',
         name: 'dashboard',
         component: DashboardComponent,
@@ -35,6 +46,22 @@ const routes= [
         path: '/projects',
         name: 'projects',
         component: ProjectsComponent,
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
+        path: '/notes/:id',
+        name: 'notes',
+        component: NotesComponent,
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
+        path: '/users',
+        name: 'users',
+        component: UsersComponent,
         meta: {
             requiresAuth: true,
         }

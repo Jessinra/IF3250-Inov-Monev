@@ -635,39 +635,10 @@ class UserControllerTest extends TestCase
          *  Send update, but changes nothing : OK
          */
 
-        $this->call('POST', '/api/user', array(
-            'action' => $this->createAction,
-            'name' => $this->testName,
-            'username' => $this->testUsername,
-            'email' => $this->testEmail,
-            'password' => $this->testPassword,
-            'password_confirmation' => $this->testPassword
-        ));
-
+        $this->createDummyUser();
         $this->assertDatabaseHas('users', [
             'id' => 1,
-            'name' => $this->testName,
-            'username' => $this->testUsername,
-            'email' => $this->testEmail,
         ]);
-
-        $this->call('POST', '/api/user', array(
-            'action' => $this->createAction,
-            'name' => $this->testName . "2",
-            'username' => $this->testUsername . "2",
-            'email' => $this->testEmail . "2",
-            'password' => $this->testPassword,
-            'password_confirmation' => $this->testPassword
-        ));
-
-        $this->assertDatabaseHas('users', [
-            'id' => 2,
-            'name' => $this->testName . "2",
-            'username' => $this->testUsername . "2",
-            'email' => $this->testEmail . "2",
-        ]);
-
-        // At this point, 2 user created with different name, lets crash them together
 
         $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
@@ -790,11 +761,11 @@ class UserControllerTest extends TestCase
         /*
          *   Creating user without name is not allowed
          */
-
+        $this->createDummyUser();
         $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
-            'username' => $this->testUsername,
+            'username' => "updated",
             'email' => $this->testEmail,
             'password' => $this->testPassword,
             'password_confirmation' => $this->testPassword
@@ -802,7 +773,7 @@ class UserControllerTest extends TestCase
 
         $this->assertDatabaseMissing('users', [
             'id' => 1,
-            'username' => $this->testUsername
+            'username' => "updated"
         ]);
     }
 
@@ -811,7 +782,7 @@ class UserControllerTest extends TestCase
         /*
         *   Creating user empty name is not allowed
         */
-
+        $this->createDummyUser();
         $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
@@ -835,11 +806,11 @@ class UserControllerTest extends TestCase
         /*
          *   Creating user without username is not allowed
          */
-
+        $this->createDummyUser();
         $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
-            'name' => $this->testName,
+            'name' => "updated",
             'email' => $this->testEmail,
             'password' => $this->testPassword,
             'password_confirmation' => $this->testPassword
@@ -847,18 +818,18 @@ class UserControllerTest extends TestCase
 
         $this->assertDatabaseMissing('users', [
             'id' => 1,
-            'username' => $this->testName,
+            'name' => "updated",
         ]);
 
     }
 
     public function testUpdateEmptyUsername()
     {
-
+        $this->createDummyUser();
         $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
-            'name' => $this->testName,
+            'name' => "updated",
             'username' => "",
             'email' => $this->testEmail,
             'password' => $this->testPassword,
@@ -867,7 +838,7 @@ class UserControllerTest extends TestCase
 
         $this->assertDatabaseMissing('users', [
             'id' => 1,
-            'username' => ""
+            'name' => "updated",
         ]);
     }
 
@@ -875,11 +846,11 @@ class UserControllerTest extends TestCase
 
     public function testUpdateWithoutEmail()
     {
-
+        $this->createDummyUser();
         $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
-            'name' => $this->testName,
+            'name' => "updated",
             'username' => $this->testUsername,
             'password' => $this->testPassword,
             'password_confirmation' => $this->testPassword
@@ -887,18 +858,17 @@ class UserControllerTest extends TestCase
 
         $this->assertDatabaseMissing('users', [
             'id' => 1,
-            'name' => $this->testName,
-            'username' => $this->testUsername,
+            'name' => "updated",
         ]);
     }
 
     public function testUpdateEmptyEmail()
     {
-
+        $this->createDummyUser();
         $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
-            'name' => $this->testName,
+            'name' => "updated",
             'username' => $this->testUsername,
             'email' => "",
             'password' => $this->testPassword,
@@ -907,9 +877,8 @@ class UserControllerTest extends TestCase
 
         $this->assertDatabaseMissing('users', [
             'id' => 1,
-            'name' => $this->testName,
-            'username' => $this->testUsername,
-            'email' => "",
+            'name' => "updated",
+
         ]);
     }
 
@@ -917,30 +886,28 @@ class UserControllerTest extends TestCase
 
     public function testUpdateWithoutPassword()
     {
-
+        $this->createDummyUser();
         $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
-            'name' => $this->testName,
+            'name' => "updated",
             'username' => $this->testUsername,
             'email' => $this->testPassword,
         ));
 
         $this->assertDatabaseMissing('users', [
             'id' => 1,
-            'name' => $this->testName,
-            'username' => $this->testUsername,
-            'email' => $this->testPassword,
+            'name' => "updated",
         ]);
     }
 
     public function testUpdateEmptyPassword()
     {
-
+        $this->createDummyUser();
         $this->call('POST', '/api/user', array(
             'action' => $this->updateAction,
             'id' => 1,
-            'name' => $this->testName,
+            'name' => "updated",
             'username' => $this->testUsername,
             'email' => $this->testPassword,
             'password' => "",
@@ -949,9 +916,8 @@ class UserControllerTest extends TestCase
 
         $this->assertDatabaseMissing('users', [
             'id' => 1,
-            'name' => $this->testName,
-            'username' => $this->testUsername,
-            'email' => $this->testPassword,
+            'name' => "updated",
+
         ]);
     }
 

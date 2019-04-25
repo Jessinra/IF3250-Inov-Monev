@@ -17,8 +17,8 @@ class CreateStagesTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->text('description');
-            $table->boolean('editable');
-            $table->boolean('deletable');
+            $table->string('editable')->default("false");
+            $table->string('deletable')->default("false");
             $table->timestamps();
         });
     }
