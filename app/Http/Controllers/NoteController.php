@@ -73,7 +73,7 @@ class NoteController extends Controller
     
       private function isUpdateRequestValid($data) {
         $validator = Validator::make($data, [
-          'id' => ['required', 'string'],
+          'id' => ['required', 'integer'],
           'note' => ['required', 'string', 'max:255', 'unique:notes'],
           'project' => ['required', 'string'],
           'uploader' => ['required', 'integer']
@@ -84,6 +84,7 @@ class NoteController extends Controller
     
       private function parseUpdateData($data) {
         return [
+          'id' => $data['id'],
           'note' => $data['note'],
           'project' => $data['project'],
           'uploader' => $data['uploader']
@@ -96,7 +97,7 @@ class NoteController extends Controller
         }
     
         $data = $this->parseUpdateData($data);
-    
+        \Log::info($data);
         $note = Note::find($data['id']);
         $note['note'] = $data['note'];
     
@@ -112,7 +113,6 @@ class NoteController extends Controller
         
         // Get notes
         $notes = Note::paginate($notes_per_page);
-        \Log::info($notes);
         // return as a resource
         return NoteResource::collection($notes);
       }

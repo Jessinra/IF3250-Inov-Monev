@@ -222,6 +222,7 @@ export default {
             let url = 'http://localhost:8000/api/notes';
             let data = {
                 action: 'update',
+                id: id,
                 note: this.note.note,
                 project: project,
                 uploader: user.id
