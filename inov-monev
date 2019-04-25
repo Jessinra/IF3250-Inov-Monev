@@ -1,2 +1,2 @@
 #!/bin/bash
-./vendor/bin/phpunit && (gnome-terminal --window -- npm run watch & gnome-terminal --window -- php artisan serve)
+./vendor/bin/phpunit && (xterm -e npm run watch & xterm -e php artisan serve)
