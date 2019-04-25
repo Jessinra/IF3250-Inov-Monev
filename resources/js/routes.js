@@ -5,6 +5,7 @@ import DashboardComponent from './components/Dashboard.vue'
 import RolesComponent from './components/Roles.vue'
 import UsersComponent from './components/Users.vue'
 import ProjectsComponent from './components/Projects.vue'
+import NotesComponent from './components/Notes.vue'
 
 const routes= [
     {
@@ -45,6 +46,14 @@ const routes= [
         path: '/projects',
         name: 'projects',
         component: ProjectsComponent,
+        meta: {
+            requiresAuth: true,
+        }
+    },
+    {
+        path: '/notes/:id',
+        name: 'notes',
+        component: NotesComponent,
         meta: {
             requiresAuth: true,
         }
