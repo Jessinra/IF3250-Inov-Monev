@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Group;
+use App\Http\Resources\Group as GroupResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 
@@ -11,7 +12,7 @@ class GroupController extends Controller
 
     public function groupDashboard()
     {
-        return "this is Group management page";
+        return view('pages.group');
     }
 
     public function groupManagementHandler(Request $request)
@@ -209,11 +210,18 @@ class GroupController extends Controller
 
     private function fetchAllGroup()
     {
+        $group_per_page = 15;
 
-        try {
-            return Group::all();
-        } catch (\Exception $e) {
-            return [];
-        }
+        // Get group
+        $group = Group::paginate($group_per_page);
+
+        // return as a resource
+        return GroupResource::collection($group);
+
+        // try {
+        //    return Group::all();
+        //} catch (\Exception $e) {
+        //    return [];
+        //}
     }
 }
