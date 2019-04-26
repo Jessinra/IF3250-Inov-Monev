@@ -140,7 +140,6 @@
 
 <script>
 import axios from 'axios';
-import Name from './UserName';
 
 export default {
     data() {
