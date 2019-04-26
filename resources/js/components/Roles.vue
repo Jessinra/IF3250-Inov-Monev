@@ -74,21 +74,21 @@
                         <div class="box-body">
                             <div class="form-group">
                                 <label>Name
-                                    <input type="text" class="form-control"
-                                    placeholder="New name" v-model="current_selected_role.name">
+                                    <input v-if="edit_mode" type="text" class="form-control" placeholder="New name" v-model="current_selected_role.name">
+                                    <input v-else type="text" class="form-control" placeholder="New name" v-model="new_role.name">
                                 </label>
                             </div>
                             <div class="form-group">
                                 <label>Description
-                                    <input type="text" class="form-control"
-                                    placeholder="New description" v-model="current_selected_role.description">
+                                    <input v-if="edit_mode" type="text" class="form-control" placeholder="New description" v-model="current_selected_role.description">
+                                    <input v-else type="text" class="form-control" placeholder="New description" v-model="new_role.description">
                                 </label>
                             </div>
                         </div>
                     </form>    
 
                     <div>
-                        <div v-for="permission in permissions" v-bind:key="current_selected_role.id">
+                        <div v-if="edit_mode" v-for="permission in permissions" v-bind:key="current_selected_role.id">
                             <input type="checkbox" v-model="current_selected_role.permissions" :value="permission"/> {{ permission.name }}
                         </div>
                     </div>
@@ -148,7 +148,6 @@ export default {
             permissions: [],
             roles: [],
             new_role: {
-                id: '',
                 name: '',
                 description: '',
             },
@@ -216,9 +215,8 @@ export default {
             let url = 'http://localhost:8000/api/role';
             let data = {
                 action: 'create',
-                name: this.current_selected_role.name,
-                description: this.current_selected_role.description,
-                permissions: this.current_selected_role.permissions
+                name: this.new_role.name,
+                description: this.new_role.description,
             }
             let options = {
                 method: 'post',

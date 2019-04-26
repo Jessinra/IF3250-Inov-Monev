@@ -81,9 +81,9 @@ class RoleController extends Controller
 
     private function createNewRoleHandler($data)
     {
-
-        $newRole = $this->createNewRole($data);
-        $newRole = $this->addPermissionsToRole($newRole, $data);
+        // $newRole = $this->createNewRole($data);
+        $newRole = Role::create($data);
+        // $newRole = $this->addPermissionsToRole($newRole, $data);
 
         if (!$newRole) {
             $this->displayCreateRoleFailed();
