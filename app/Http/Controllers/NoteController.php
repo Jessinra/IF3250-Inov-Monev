@@ -108,11 +108,11 @@ class NoteController extends Controller
         return $note;
       }
     
-      private function fetchAllNotes() {
+      private function fetchAllNotes($data) {
         $notes_per_page = 15;
         
         // Get notes
-        $notes = Note::paginate($notes_per_page);
+        $notes = Note::where('id', $data['project'])->paginate($notes_per_page);
         // return as a resource
         return NoteResource::collection($notes);
       }
