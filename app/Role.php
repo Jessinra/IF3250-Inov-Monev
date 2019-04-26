@@ -21,10 +21,11 @@
         }
 
         /* Eloquent many to many function */
-        public function permissions() {
-            return $this->belongsToMany('App\Permission', 'role_permission')->withPivot('id')->withTimestamps();
+        public function permissions()
+        {
+            return $this->belongsToMany('App\Permission', 'role_permission')->withPivot('role_id', 'permission_id')->withTimestamps();
         }
-        
+
         public function addUser($userId) {
             $this->users()->attach($userId);
         }
