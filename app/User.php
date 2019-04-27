@@ -39,12 +39,12 @@
 
         /* Eloquent many to many function */
         public function roles() {
-            return $this->belongsToMany('App\Role', "user_role")->withPivot('id')->withTimestamps();
+            return $this->belongsToMany('App\Role', "user_role")->withPivot('user_id','role_id')->withTimestamps();
         }
 
         /* Eloquent many to many function */
         public function groups() {
-            return $this->belongsToMany('App\Group', "user_group")->withPivot('id')->withTimestamps();
+            return $this->belongsToMany('App\Group', "user_group")->withPivot('user_id','group_id')->withTimestamps();
         }
 
         public function projects() {
