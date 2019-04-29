@@ -29,8 +29,8 @@ class NoteController extends Controller
     
       private function isCreateRequestValid($data) {
         $validator = Validator::make($data, [
-          'note' => ['required', 'string', 'max:255', 'unique:notes'],
-          'project' => ['required', 'string'],
+          'note' => ['required', 'string', 'max:255'],
+          'project' => ['required', 'integer'],
           'uploader' => ['required', 'integer']
         ]);
     
@@ -74,8 +74,8 @@ class NoteController extends Controller
       private function isUpdateRequestValid($data) {
         $validator = Validator::make($data, [
           'id' => ['required', 'integer'],
-          'note' => ['required', 'string', 'max:255', 'unique:notes'],
-          'project' => ['required', 'string'],
+          'note' => ['required', 'string', 'max:255'],
+          'project' => ['required', 'integer'],
           'uploader' => ['required', 'integer']
         ]);
     
@@ -108,11 +108,11 @@ class NoteController extends Controller
         return $note;
       }
     
-      private function fetchAllNotes() {
+      private function fetchAllNotes($data) {
         $notes_per_page = 15;
         
         // Get notes
-        $notes = Note::paginate($notes_per_page);
+        $notes = Note::where('id', $data['project'])->paginate($notes_per_page);
         // return as a resource
         return NoteResource::collection($notes);
       }

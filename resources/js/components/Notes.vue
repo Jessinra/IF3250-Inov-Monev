@@ -146,7 +146,8 @@ export default {
         fetchAllNotes: function(page_url) {
             let url = page_url || 'http://localhost:8000/api/notes';
             let data = {
-                action: 'fetchAll' 
+                action: 'fetchAll',
+                project: this.$route.params.id
             };
             let vm = this;
             let options = {

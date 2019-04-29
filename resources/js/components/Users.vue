@@ -453,6 +453,8 @@ export default {
                     this.fetchAllUsers();
                 })
             this.clearUser();
+            this.users_with_groups_after = []
+            this.users_with_roles_after = []
         },
     },
     created: function() {

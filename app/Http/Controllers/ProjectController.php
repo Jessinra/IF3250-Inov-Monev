@@ -29,7 +29,7 @@ class ProjectController extends Controller
 
   private function isCreateRequestValid($data) {
     $validator = Validator::make($data, [
-      'name' => ['required', 'string', 'max:255', 'unique:projects'],
+      'name' => ['required', 'string', 'max:255'],
       'description' => ['string', 'max:255'],
       'file' => ['required', 'file', 'max:5000']
     ]);
@@ -78,7 +78,7 @@ class ProjectController extends Controller
   private function isUpdateRequestValid($data) {
     $validator = Validator::make($data, [
       'id' => ['required', 'string'],
-      'name' => ['required', 'string', 'max:255', 'unique:projects'],
+      'name' => ['required', 'string', 'max:255'],
       'description' => ['string', 'max:255'],
       'file' => ['required', 'file', 'max:5000']
     ]);
@@ -94,7 +94,8 @@ class ProjectController extends Controller
       'id' => isset($data['id']) ? $data['id'] : null,
       'name' => isset($data['name']) ? $data['name'] : null,
       'description' => isset($data['description']) ? $data['description'] : null,
-      'file' => $path
+      'file' => $path,
+      'uploader' => $data['uploader']
     ];
   }
 
