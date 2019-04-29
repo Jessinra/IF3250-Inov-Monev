@@ -44,7 +44,7 @@ class UserController extends Controller
 //        $this->redirectIfNotLoggedIn($auth);
 
         $data = $request->all();
-        $data = array_map('trim', $data);
+        // $data = array_map($data);
 
         $action = isset($data['action']) ? $data['action'] : null;
         if ($action == "create") {
@@ -100,6 +100,7 @@ class UserController extends Controller
             return null;
         }
 
+
         return User::create($data);
     }
 
@@ -116,10 +117,8 @@ class UserController extends Controller
             'c_pass_confirmation' => isset($data['password_confirmation']) ? $data['password_confirmation'] : null,
 
             'groups_added' => isset($data['groups_added']) ? $data['groups_added'] : null,
-            'groups_removed' => isset($data['groups_removed']) ? $data['groups_removed'] : null,
 
             'roles_added' => isset($data['roles_added']) ? $data['roles_added'] : null,
-            'roles_removed' => isset($data['roles_removed']) ? $data['roles_removed'] : null,
         ];
     }
 
@@ -141,7 +140,7 @@ class UserController extends Controller
     private function addRoleToUser($user, $data)
     {
 
-        foreach($data['roles_added'] as $role_added){
+        foreach((array)$data['roles_added'] as $role_added){
             $user->addRole($role_added);
         }
         // $user->update($data)
@@ -161,13 +160,10 @@ class UserController extends Controller
 
     private function addGroupToUser($user, $data)
     {
-        foreach($data['groups_added'] as $group_added){
-            $group_added = $this->parseGroupId($group_added);
-            if ($this->isGroupIdValid($group_added) && $user){
-                $user->addGroup($group_added);
-            }
+        foreach((array)$data['groups_added'] as $group_added){
+            $user->addGroup($group_added);
         }
-        $user->update($data);
+        
 
         return $user;
     }
@@ -207,6 +203,12 @@ class UserController extends Controller
 
     private function updateUserHandler($data)
     {
+        $data = $this->parseUpdateData($data);
+
+        if (!($this->isUpdateDataValid($data))) {
+            return null;
+        }
+
         $id = $data['id'];
         $updatedUser = User::find($id);
         if (!$updatedUser) {
@@ -247,17 +249,15 @@ class UserController extends Controller
             'email' => isset($data['email']) ? $data['email'] : null,
             'password' => isset($data['password']) ? Hash::make($data['password']) : null,
 
-            'addRole' => isset($data['addRole']) ? ($data['addRole'] === 'true') : false,
-            'removeRole' => isset($data['removeRole']) ? ($data['removeRole'] === 'true') : false,
-            'addGroup' => isset($data['addGroup']) ? ($data['addGroup'] === 'true') : false,
-            'removeGroup' => isset($data['removeGroup']) ? ($data['removeGroup'] === 'true') : false,
-
-            'roleId' => isset($data['roleId']) ? $data['roleId'] : null,
-            'groupId' => isset($data['groupId']) ? $data['groupId'] : null,
-
             // Copy of password un-hashed for validation
             'c_pass' => isset($data['password']) ? $data['password'] : null,
             'c_pass_confirmation' => isset($data['password_confirmation']) ? $data['password_confirmation'] : null,
+
+            'groups_added' => isset($data['groups_added']) ? $data['groups_added'] : null,
+            'groups_removed' => isset($data['groups_removed']) ? $data['groups_removed'] : null,
+            'roles_added' => isset($data['roles_added']) ? $data['roles_added'] : null,
+            'roles_removed' => isset($data['roles_removed']) ? $data['roles_removed'] : null,
+
         ];
     }
 
@@ -289,7 +289,7 @@ class UserController extends Controller
 
             $user = User::find($data["id"]);
             $validator = Validator::make($data, [
-                'id' => ['required', 'string'],
+                'id' => ['required', 'int'],
                 'name' => ['required', 'string', 'max:255'],
                 'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user)],
                 'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user)],
@@ -300,7 +300,7 @@ class UserController extends Controller
         } else {
 
             $validator = Validator::make($data, [
-                'id' => ['required', 'string'],
+                'id' => ['required', 'int'],
                 'name' => ['required', 'string', 'max:255'],
                 'username' => ['required', 'string', 'max:255', 'unique:users'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
