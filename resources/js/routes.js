@@ -68,8 +68,8 @@ const routes= [
         }
     },
     {
-        path: '/group',
-        name: 'group',
+        path: '/groups',
+        name: 'groups',
         component: GroupComponent,
         meta: {
             requiresAuth: true,

@@ -25,18 +25,26 @@
                                     <th class="col-sm-1">ID</th>
                                     <th class="col-sm-2">NIP</th>
                                     <th class="col-sm-2">Name</th>
-                                    <th class="col-sm-2">email</th>
+                                    <th class="col-sm-2">Email</th>
                                     <th class="col-sm-2">Group</th>
                                     <th class="col-sm-1">Role</th>
-                                    <th class="col-sm-2 text-right">Actions</th>
+                                    <th class="col-sm-2 text-center">Actions</th>
                                 </tr>
                                 <tr v-for="user in users" v-bind:key="user.id">
                                     <th class="col-sm-1">{{ user.id }}</th>
                                     <th class="col-sm-2">{{ user.username }}</th>
                                     <th class="col-sm-2">{{ user.name }}</th>
                                     <th class="col-sm-2">{{ user.email }}</th>
-                                    <th class="col-sm-2">{{ user.roleId }}</th>
-                                    <th class="col-sm-1">{{ user.groupId }}</th>
+                                    <th class="col-sm-2">
+                                        <div v-for="group in user.groups" v:bind:key="group.id">
+                                            {{group.name}}
+                                        </div>
+                                    </th>
+                                    <th class="col-sm-1">
+                                        <div v-for="role in user.roles" v:bind:key="role.id">
+                                            {{role.name}}
+                                        </div>
+                                    </th>
                                     <th class="row col-sm-2 text-right">
                                         <button class="btn btn-warning" @click="openUpdate(user.id)"
                                         data-toggle="modal" data-target="#modal-user">Update</button>
@@ -110,17 +118,21 @@
                                     placeholder="Confirm Password" v-model="user.password_confirmation">
                                 </label>
                             </div>
-                            <div class="form-group">
-                                <label>Role Id
-                                    <input type="text" class="form-control"
-                                    placeholder="New Role Id" v-model="user.roleId">
-                                </label>
+                            <div class="box-header with-border">
+                                <slot name="header">List of Groups</slot>
                             </div>
-                            <div class="form-group">
-                                <label>Group Id
-                                    <input type="text" class="form-control"
-                                    placeholder="New Group Id" v-model="user.groupId">
-                                </label>
+                            <div class="modal-body">
+                                <div v-for="group in groups" v-bind:key="group.id">
+                                    <input type="checkbox" v-model="users_with_groups_after" :value="group.id"/> {{ group.name }}
+                                </div>
+                            </div>
+                            <div class="box-header with-border">
+                                <slot name="header">List of Roles</slot>
+                            </div>
+                            <div class="modal-body">
+                                <div v-for="role in roles" v-bind:key="role.id">
+                                    <input type="checkbox" v-model="users_with_roles_after" :value="role.id"/> {{ role.name }}
+                                </div>
                             </div>
                         </div>
                     </form>    
@@ -176,17 +188,21 @@
                                     placeholder="Confirm password" v-model="user.password_confirmation">
                                 </label>
                             </div>
-                            <div class="form-group">
-                                <label>Role Id
-                                    <input type="text" class="form-control"
-                                    placeholder="Update Role ID" v-model="user.roleId">
-                                </label>
+                            <div class="box-header with-border">
+                                <slot name="header">List of Groups</slot>
                             </div>
-                            <div class="form-group">
-                                <label>Group Id
-                                    <input type="text" class="form-control"
-                                    placeholder="Update Group ID" v-model="user.groupId">
-                                </label>
+                            <div class="modal-body">
+                                <div v-for="group in groups" v-bind:key="group.id">
+                                    <input type="checkbox" v-model="users_with_groups_after" :value="group.id"/> {{ group.name }}
+                                </div>
+                            </div>
+                            <div class="box-header with-border">
+                                <slot name="header">List of Roles</slot>
+                            </div>
+                            <div class="modal-body">
+                                <div v-for="role in roles" v-bind:key="role.id">
+                                    <input type="checkbox" v-model="users_with_roles_after" :value="role.id"/> {{ role.name }}
+                                </div>
                             </div>
                         </div>
                     </form>    
@@ -210,6 +226,8 @@ export default {
     data() {
         return {
             users: [],
+            roles: [],
+            groups: [],
             user: {
                 id: '',
                 username: '',
@@ -217,17 +235,42 @@ export default {
                 name: '',
                 password: '',
                 password_confirmation: '',
-                roleId: '',
-                groupId:''
+                groups: [],
+                roles: [],
+                groups_added: [],
+                groups_removed: [],
+                roles_added: [],
+                roles_removed: [],
             },
-            user_id: '',
-            pagination: {}
+            users_with_groups_before: [],
+            users_with_groups_after: [],
+            users_with_roles_after: [],
+            users_with_roles_before: [],
+            pagination: {},
         }
     },
 
     methods: {
         fetchAllUsers: function(page_url) {
             let url = page_url || 'http://localhost:8000/api/user';
+            let data = {
+                action: 'fetchAll' 
+            };
+            // let vm = this;
+            let options = {
+                method: 'post',
+                data,
+                url
+            }
+
+            axios(options)
+                .then(res => {
+                    this.users = res.data;
+                    // vm.makePagination(res.data.meta, res.data.links);
+                });
+        },
+        fetchAllRoles: function(page_url) {
+            let url = page_url || 'http://localhost:8000/api/role';
             let data = {
                 action: 'fetchAll' 
             };
@@ -240,9 +283,24 @@ export default {
 
             axios(options)
                 .then(res => {
-                    console.log(res);
-                    this.users = res.data.data;
-                    vm.makePagination(res.data.meta, res.data.links);
+                    this.roles = res.data;
+                });
+        },
+        fetchAllGroups: function(page_url) {
+            let url = page_url || 'http://localhost:8000/api/group';
+            let data = {
+                action: 'fetchAll' 
+            };
+            let vm = this;
+            let options = {
+                method: 'post',
+                data,
+                url
+            }
+
+            axios(options)
+                .then(res => {
+                    this.groups = res.data.data;
                 });
         },
         makePagination: function(meta, links) {
@@ -255,7 +313,27 @@ export default {
             
             this.pagination = pagination;
         },
+        clearUser: function() {
+            this.user = {
+                id: '',
+                username: '',
+                email: '',
+                name: '',
+                password: '',
+                password_confirmation: '',
+                groups: [],
+                roles: [],
+                groups_added: [],
+                groups_removed: [],
+                roles_added: [],
+                roles_removed: [],
+            };
+        },
+
         createNewUser: function() {
+            this.user.groups_added = this.users_with_groups_after;
+            this.user.roles_added = this.users_with_roles_after;
+
             let url = 'http://localhost:8000/api/user';
             let data = {
                 action: 'create',
@@ -264,9 +342,10 @@ export default {
                 email: this.user.email,
                 password: this.user.password,
                 password_confirmation: this.user.password_confirmation,
-                roleId: this.user.roleId,
-                groupId: this.user.groupId
+                groups_added: this.user.groups_added,
+                roles_added: this.user.roles_added,
             }
+            
             let options = {
                 method: 'post',
                 data,
@@ -275,9 +354,11 @@ export default {
 
             axios(options)
                 .then(res => {
-                    console.log(res);
                     this.fetchAllUsers();
                 })
+            this.users_with_roles_after = []
+            this.users_with_groups_after = []
+            this.clearUser();
         },
         deleteUser: function(id) {
             let url = 'http://localhost:8000/api/user';
@@ -293,14 +374,58 @@ export default {
 
             axios(options)
                 .then(res => {
-                    console.log(res);
                     this.fetchAllUsers();
                 })
         },
         openUpdate: function(id) {
-            this.user.id = id;
+            this.user.id = id
+            let arr_temp = []
+            var user_idx = ''
+            
+            this.users.forEach(function (value,key) {
+                if (value.id==id){
+                    user_idx = key;
+                }
+            })
+            
+            this.users[user_idx].groups.slice().forEach(function(group){
+                arr_temp.push(group.id)
+            })
+            this.users_with_groups_after = arr_temp
+            this.users_with_groups_before = arr_temp
+
+            arr_temp = []
+            this.users[user_idx].roles.slice().forEach(function(role){
+                arr_temp.push(role.id)
+            })
+            this.users_with_roles_after = arr_temp
+            this.users_with_roles_before = arr_temp
+
+            this.user.name = this.users[user_idx].name;
+            this.user.username = this.users[user_idx].username;
+            this.user.email = this.users[user_idx].email;
+            this.user.password = ''
+            this.user.password_confirmation = ''
+            
         },
         updateUser: function(id) {
+
+            // calculate groups' removed and added
+            this.user.groups_removed = this.users_with_groups_before
+                                    .filter(x => !this.users_with_groups_after.includes(x))
+
+            this.user.groups_added = this.users_with_groups_after
+                                    .filter(x => !this.users_with_groups_before.includes(x))
+            this.users_with_groups_before = this.users_with_groups_after
+
+            // calculate roles' removed and added
+            this.user.roles_removed = this.users_with_roles_before
+                                    .filter(x => !this.users_with_roles_after.includes(x))
+
+            this.user.roles_added = this.users_with_roles_after
+                                    .filter(x => !this.users_with_roles_before.includes(x))
+            this.users_with_roles_before = this.users_with_roles_after
+
             let url = 'http://localhost:8000/api/user';
             let data = {
                 action: 'update',
@@ -310,9 +435,12 @@ export default {
                 email: this.user.email,
                 password: this.user.password,
                 password_confirmation: this.user.password_confirmation,
-                roleId: this.user.roleId,
-                groupId: this.user.groupId,
+                groups_added: this.user.groups_added,
+                groups_removed: this.user.groups_removed,
+                roles_added: this.user.roles_added,
+                roles_removed: this.user.roles_removed,
             }
+            console.log(data)
             let options = {
                 method: 'post',
                 data,
@@ -321,13 +449,18 @@ export default {
 
             axios(options)
                 .then(res => {
-                    console.log(res);
+                    console.log(res)
                     this.fetchAllUsers();
                 })
-        }
+            this.clearUser();
+            this.users_with_groups_after = []
+            this.users_with_roles_after = []
+        },
     },
     created: function() {
         this.fetchAllUsers();
+        this.fetchAllGroups();
+        this.fetchAllRoles();
     }
 }
 </script>

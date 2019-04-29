@@ -44,7 +44,7 @@ class UserController extends Controller
 //        $this->redirectIfNotLoggedIn($auth);
 
         $data = $request->all();
-        $data = array_map('trim', $data);
+        // $data = array_map($data);
 
         $action = isset($data['action']) ? $data['action'] : null;
         if ($action == "create") {
@@ -77,7 +77,7 @@ class UserController extends Controller
         return "this is User management page";
     }
 
-
+    //LAGI DISINI
     private function createNewUserHandler($data)
     {
 
@@ -100,6 +100,7 @@ class UserController extends Controller
             return null;
         }
 
+
         return User::create($data);
     }
 
@@ -115,8 +116,9 @@ class UserController extends Controller
             'c_pass' => isset($data['password']) ? $data['password'] : null,
             'c_pass_confirmation' => isset($data['password_confirmation']) ? $data['password_confirmation'] : null,
 
-            'roleId' => isset($data['roleId']) ? $data['roleId'] : null,
-            'groupId' => isset($data['groupId']) ? $data['groupId'] : null,
+            'groups_added' => isset($data['groups_added']) ? $data['groups_added'] : null,
+
+            'roles_added' => isset($data['roles_added']) ? $data['roles_added'] : null,
         ];
     }
 
@@ -137,10 +139,12 @@ class UserController extends Controller
 
     private function addRoleToUser($user, $data)
     {
-        $roleId = $this->parseRoleId($data);
-        if ($this->isRoleIdValid($roleId) && $user) {
-            $user->addRole($roleId);
+
+        foreach((array)$data['roles_added'] as $role_added){
+            $user->addRole($role_added);
         }
+        // $user->update($data)
+
         return $user;
     }
 
@@ -156,10 +160,10 @@ class UserController extends Controller
 
     private function addGroupToUser($user, $data)
     {
-        $groupId = $this->parseGroupId($data);
-        if ($this->isGroupIdValid($groupId) && $user) {
-            $user->addGroup($groupId);
+        foreach((array)$data['groups_added'] as $group_added){
+            $user->addGroup($group_added);
         }
+        
 
         return $user;
     }
@@ -200,23 +204,40 @@ class UserController extends Controller
     private function updateUserHandler($data)
     {
         $data = $this->parseUpdateData($data);
-        $updatedUser = $this->updateUser($data);
 
-        if ($data['addRole']) {
-            $updatedUser = $this->addRoleToUser($updatedUser, $data);
-        } else if ($data['removeRole']) {
-            $updatedUser = $this->removeRoleFromUser($updatedUser, $data);
-        } else if ($data['addGroup']) {
-            $updatedUser = $this->addGroupToUser($updatedUser, $data);
-        } else if ($data['removeGroup']) {
-            $updatedUser = $this->removeGroupFromUser($updatedUser, $data);
+        if (!($this->isUpdateDataValid($data))) {
+            return null;
         }
 
+        $id = $data['id'];
+        $updatedUser = User::find($id);
         if (!$updatedUser) {
-            $this->displayUpdateUserFailed();
+            return User::create($data);
         } else {
-            $this->displayUpdateUserSucceeded();
+            if ($data['groups_added']){
+                foreach((array)$data['groups_added'] as $group_added){
+                    $updatedUser->addGroup($group_added);
+                }
+            }
+            if ($data['groups_removed']){
+                foreach((array) $data['groups_removed'] as $group_removed){
+                    $updatedUser->removeGroup($group_removed);
+                }
+            }
+            if ($data['roles_added']){
+                foreach((array) $data['roles_added'] as $role_added) {
+                    $updatedUser->addRole($role_added);
+                }
+            }
+            if ($data['roles_removed']){
+                foreach((array) $data['roles_removed'] as $role_removed){
+                    $updatedUser->removeRole($role_removed);
+                }
+            }
+            $updatedUser->update($data);
         }
+
+        return $updatedUser;
     }
 
     private function parseUpdateData($data)
@@ -228,17 +249,15 @@ class UserController extends Controller
             'email' => isset($data['email']) ? $data['email'] : null,
             'password' => isset($data['password']) ? Hash::make($data['password']) : null,
 
-            'addRole' => isset($data['addRole']) ? ($data['addRole'] === 'true') : false,
-            'removeRole' => isset($data['removeRole']) ? ($data['removeRole'] === 'true') : false,
-            'addGroup' => isset($data['addGroup']) ? ($data['addGroup'] === 'true') : false,
-            'removeGroup' => isset($data['removeGroup']) ? ($data['removeGroup'] === 'true') : false,
-
-            'roleId' => isset($data['roleId']) ? $data['roleId'] : null,
-            'groupId' => isset($data['groupId']) ? $data['groupId'] : null,
-
             // Copy of password un-hashed for validation
             'c_pass' => isset($data['password']) ? $data['password'] : null,
             'c_pass_confirmation' => isset($data['password_confirmation']) ? $data['password_confirmation'] : null,
+
+            'groups_added' => isset($data['groups_added']) ? $data['groups_added'] : null,
+            'groups_removed' => isset($data['groups_removed']) ? $data['groups_removed'] : null,
+            'roles_added' => isset($data['roles_added']) ? $data['roles_added'] : null,
+            'roles_removed' => isset($data['roles_removed']) ? $data['roles_removed'] : null,
+
         ];
     }
 
@@ -252,6 +271,7 @@ class UserController extends Controller
         if (!$user) {
             return null;
         }
+
 
         $user['name'] = $data['name'];
         $user['username'] = $data['username'];
@@ -269,7 +289,7 @@ class UserController extends Controller
 
             $user = User::find($data["id"]);
             $validator = Validator::make($data, [
-                'id' => ['required', 'string'],
+                'id' => ['required', 'int'],
                 'name' => ['required', 'string', 'max:255'],
                 'username' => ['required', 'string', 'max:255', Rule::unique('users')->ignore($user)],
                 'email' => ['required', 'string', 'email', 'max:255', Rule::unique('users')->ignore($user)],
@@ -280,7 +300,7 @@ class UserController extends Controller
         } else {
 
             $validator = Validator::make($data, [
-                'id' => ['required', 'string'],
+                'id' => ['required', 'int'],
                 'name' => ['required', 'string', 'max:255'],
                 'username' => ['required', 'string', 'max:255', 'unique:users'],
                 'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
@@ -366,13 +386,30 @@ class UserController extends Controller
 
     private function fetchAllUser()
     {
-        $users_per_page = 15;
-        
-        // Get permissions
-        $users = User::paginate($users_per_page);
+        $user_data = User::all();
 
-        // return as a resource
-        return UserResource::collection($users);
+        foreach ($user_data as $user) {
+            foreach ($user->roles as $role) {
+                // Query permissions for role
+                // DONT DELETE
+            }
+            foreach ($user->groups as $group){
+
+            }
+        }
+
+        try {
+            return json_encode($user_data);
+        } catch (\Exception $e) {
+            return [];
+        }
+        // $users_per_page = 15;
+        
+        // // Get permissions
+        // $users = User::paginate($users_per_page);
+
+        // // return as a resource
+        // return UserResource::collection($users);
 
         // try {
         //     return User::all();

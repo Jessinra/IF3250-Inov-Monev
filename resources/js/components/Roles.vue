@@ -173,6 +173,7 @@ export default {
                 .then(res => {
                     this.roles = res.data;
                     console.log(this.roles);
+                    // console.log(this.roles[0].permissions)
                 });         
         },
         fetchPermissionsOfRole: function(page_url) {
