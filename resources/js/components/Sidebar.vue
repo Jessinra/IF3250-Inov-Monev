@@ -10,7 +10,7 @@
                 <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
-                <p>Alexander Pierce</p>
+                <p>{{name}}</p>
                 <!-- Status -->
                 <a href="#"><i class="fa fa-circle text-success"></i> Online</a>
             </div>
@@ -50,7 +50,7 @@
                 <li><router-link to="/users">
                     <i class="fa fa-link"></i>
                     <span>User</span></router-link></li>
-                    <li><router-link to="/group">
+                    <li><router-link to="/groups">
                     <i class="fa fa-link"></i>
                     <span>Group</span></router-link></li>
             </ul>
@@ -62,6 +62,23 @@
 
 <script>
     export default{
-        name: 'Sidebar'
+        name: 'Sidebar',
+        data() {
+            return {
+                name: '',
+                isLoggedIn: localStorage.getItem('inovmonev.jwt') != null,
+            }
+        },
+        mounted() {
+            this.setDefaults()
+        },
+        methods : {
+            setDefaults() {
+                if (this.isLoggedIn) {
+                    let user = JSON.parse(localStorage.getItem('inovmonev.user'))
+                    this.name = user.name
+                }
+            },
+        }
     }
 </script>
