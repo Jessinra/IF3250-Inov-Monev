@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Note;
+use App\Project;
 use App\Http\Resources\Note as NoteResource;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Auth;
+
 
 class NoteController extends Controller
 {
@@ -112,7 +114,7 @@ class NoteController extends Controller
         $notes_per_page = 15;
         
         // Get notes
-        $notes = Note::where('id', $data['project'])->paginate($notes_per_page);
+        $notes = Project::find($data['project'])->notes()->paginate($notes_per_page);
         // return as a resource
         return NoteResource::collection($notes);
       }
