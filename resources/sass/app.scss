@@ -1,0 +1,22 @@
+
+// Fonts
+@import url('https://fonts.googleapis.com/css?family=Nunito');
+
+// Variables
+@import 'variables';
+
+// Bootstrap
+// @import '~bootstrap/scss/bootstrap.scss';
+
+// Import admin lte css
+@import "~admin-lte/dist/css/AdminLTE.css";
+@import "~admin-lte/dist/css/skins/_all-skins.css";
+@import "~admin-lte/bower_components/bootstrap/dist/css/bootstrap.min.css";
+@import "~admin-lte/bower_components/font-awesome/css/font-awesome.min.css";
+@import "~admin-lte/bower_components/Ionicons/css/ionicons.min.css";
+@import "https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic";
+
+.navbar-laravel {
+  background-color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.04);
+}
